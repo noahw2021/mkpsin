@@ -125,8 +125,10 @@ void mkd_deleteelem(mkdoc_t* Document, int Reference) {
 	memset(NewFields, 0, sizeof(mkfield_t));
 	for (int i = 0; i < Document->ElementCount; i++) {
 		if (i == Reference) {
-			free(Document->Elements[i].Primary);
-			free(Document->Elements[i].Secondary); // We don't need to also free the pointers, just this structure if the structure isn't being deleted.
+			if (Document->Elements[i].Primary)
+				free(Document->Elements[i].Primary);
+			if (Document->Elements[i].Secondary)
+				free(Document->Elements[i].Secondary); // We don't need to also free the pointers, just this structure if the structure isn't being deleted.
 			continue;
 		}
 		memcpy(&NewFields[i], &Document->Elements[i], sizeof(mkfield_t));
