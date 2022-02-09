@@ -21,6 +21,15 @@
 #define _MK_CODE		0x09
 #define _MK_LINE		0x0A
 
+#define MKI_LINE_CR		0x1000
+#define MKI_LINE_LF		0x0100
+#define MKI_LINE_CRLF   0x1100
+#define MKI_LINE_LFCR   0x110F
+
+typedef struct _mkctx {
+	u16 LineEnding;
+}mkctx_t;
+
 typedef struct _mkfield {
 	byte Type;
 	str* Primary;
@@ -50,5 +59,7 @@ int mkd_addcode(mkdoc_t* Document, const char* Source, const char* LanguageStr);
 int mkd_addline(mkdoc_t* Document);
 
 void mkd_deleteelem(mkdoc_t* Document, int Reference);
+
+extern mkctx_t* mkctx;
 
 #endif /* md_h */
