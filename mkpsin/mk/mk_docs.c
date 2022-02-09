@@ -102,6 +102,7 @@ char* mk_compile(mkdoc_t* Document) {
 				mki_writestream(TotalOutBuf, &CurrentSize, &Used, Outstream);
 				break;
 			case _MK_LINE:
+				sprintf(TotalOutBuf, "%s", mki_getline());
 				mki_writestream(TotalOutBuf, &CurrentSize, &Used, Outstream);
 				break;
 			default:

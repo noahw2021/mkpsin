@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8C2A9F9227B40E6D004C98C8 /* mk_engine.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A9F9127B40E6D004C98C8 /* mk_engine.c */; };
 		8C2A9F9427B410AE004C98C8 /* mk_docs.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A9F9327B410AE004C98C8 /* mk_docs.c */; };
+		8C2A9F9627B41902004C98C8 /* mk_fields.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A9F9527B41902004C98C8 /* mk_fields.c */; };
 		8C925E7327AADBD400150F9E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C925E7227AADBD400150F9E /* main.c */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 /* Begin PBXFileReference section */
 		8C2A9F9127B40E6D004C98C8 /* mk_engine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mk_engine.c; sourceTree = "<group>"; };
 		8C2A9F9327B410AE004C98C8 /* mk_docs.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mk_docs.c; sourceTree = "<group>"; };
+		8C2A9F9527B41902004C98C8 /* mk_fields.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mk_fields.c; sourceTree = "<group>"; };
 		8C925E6F27AADBD400150F9E /* mkpsin */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mkpsin; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C925E7227AADBD400150F9E /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		8C98CF5327B315E000EECD75 /* mk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mk.h; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 				8C98CF5327B315E000EECD75 /* mk.h */,
 				8C2A9F9127B40E6D004C98C8 /* mk_engine.c */,
 				8C2A9F9327B410AE004C98C8 /* mk_docs.c */,
+				8C2A9F9527B41902004C98C8 /* mk_fields.c */,
 			);
 			path = mk;
 			sourceTree = "<group>";
@@ -139,6 +142,7 @@
 			files = (
 				8C925E7327AADBD400150F9E /* main.c in Sources */,
 				8C2A9F9227B40E6D004C98C8 /* mk_engine.c in Sources */,
+				8C2A9F9627B41902004C98C8 /* mk_fields.c in Sources */,
 				8C2A9F9427B410AE004C98C8 /* mk_docs.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

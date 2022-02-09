@@ -48,7 +48,7 @@ mkdoc_t* mk_newdoc(void);
 char* mk_compile(mkdoc_t* Document);
 
 int mkd_addheading1(mkdoc_t* Document, const char* Value);
-int mkd_addheading3(mkdoc_t* Document, const char* Value);
+int mkd_addheading2(mkdoc_t* Document, const char* Value);
 int mkd_addheading3(mkdoc_t* Document, const char* Value);
 int mkd_addtext(mkdoc_t* Document, const char* Value);
 int mkd_addlink(mkdoc_t* Document, const char* Address, const char* Title);
