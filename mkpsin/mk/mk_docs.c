@@ -60,7 +60,7 @@ char* mk_compile(mkdoc_t* Document) {
 	
 	for (int i = 0; i < Document->ElementCount; i++) {
 		mkfield_t* CurField = &Document->Elements[i];
-		char* TotalOutBuf = malloc(25 + (CurField->Primary == NULL) ? 0 : strlen(CurField->Primary) + (CurField->Secondary == NULL) ? 0 : strlen(CurField->Secondary));
+		char* TotalOutBuf = malloc(25 + ((CurField->Primary == NULL) ? 0 : strlen(CurField->Primary)) + ((CurField->Secondary == NULL) ? 0 : strlen(CurField->Secondary)));
 		switch (CurField->Type) {
 			case _MK_HEADING1:
 				sprintf(TotalOutBuf, "# %s%s", CurField->Primary, mki_getline());
