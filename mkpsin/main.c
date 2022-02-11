@@ -6,9 +6,12 @@
 //
 
 #include <stdio.h>
+#include "mk/mk.h"
 
 int main(int argc, const char * argv[]) {
-	// insert code here...
-	printf("Hello, World!\n");
+	mk_init(MKI_LINE_LF);
+	mkdoc_t* Document = mk_newdoc();
+	
+	printf("%s", mk_compile(Document));
 	return 0;
 }

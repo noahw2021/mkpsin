@@ -10,8 +10,12 @@
 #include <string.h>
 
 int mki_newelem(mkdoc_t* Document, byte Type, const char* Primary, const char* Secondary) {
-	Document->Elements = realloc(Document->Elements, (sizeof(mkfield_t) * Document->ElementCount + 1));
+	Document->Elements = realloc(Document->Elements, (sizeof(mkfield_t) * (Document->ElementCount + 1)));
 	memset(&Document->Elements[Document->ElementCount], 0, sizeof(mkfield_t));
+	if (Primary)
+		Document->Elements[Document->ElementCount].Primary = malloc(strlen(Primary) + 1);
+	if (Secondary)
+		Document->Elements[Document->ElementCount].Secondary = malloc(strlen(Secondary) + 1);
 	
 	Document->Elements[Document->ElementCount].Type = Type;
 	if (Primary)

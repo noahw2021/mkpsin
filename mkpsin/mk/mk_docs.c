@@ -40,6 +40,7 @@ char* mki_getline(void) {
 			strcpy(LastPointer, "???");
 			break;
 	}
+	return LastPointer;
 }
 void mki_writestream(char* Writing, u32* Size, u32* Used, char* Stream) {
 	u32 Length = strlen(Writing);
@@ -59,7 +60,7 @@ char* mk_compile(mkdoc_t* Document) {
 	
 	for (int i = 0; i < Document->ElementCount; i++) {
 		mkfield_t* CurField = &Document->Elements[i];
-		char* TotalOutBuf = malloc(25 + strlen(CurField->Primary) + strlen(CurField->Secondary));
+		char* TotalOutBuf = malloc(25 + (CurField->Primary == NULL) ? 0 : strlen(CurField->Primary) + (CurField->Secondary == NULL) ? 0 : strlen(CurField->Secondary));
 		switch (CurField->Type) {
 			case _MK_HEADING1:
 				sprintf(TotalOutBuf, "# %s%s", CurField->Primary, mki_getline());
@@ -102,7 +103,7 @@ char* mk_compile(mkdoc_t* Document) {
 				mki_writestream(TotalOutBuf, &CurrentSize, &Used, Outstream);
 				break;
 			case _MK_LINE:
-				sprintf(TotalOutBuf, "%s", mki_getline());
+				sprintf(TotalOutBuf, "%s", mki_getline());	
 				mki_writestream(TotalOutBuf, &CurrentSize, &Used, Outstream);
 				break;
 			default:
