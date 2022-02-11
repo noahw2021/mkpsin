@@ -33,4 +33,5 @@ void ui_syntax(int argc, char** argv) {
 	printf("Where \"I:(64,64),SRC]\" signifies that the operand \"SRC\" is an immediate value physically stored in 64 bits and that all 64 bits are available to be used by the compiler.\n");
 	printf("Where \":80\" signifies that the instruction is in total 80 bits long. This is determined by (8 + 8 + 64), with 8 being the size of the opcode, 8 being the size of the 1st operand and 64 being the size of the 2nd operand.\n");
 	printf("Where \"00\" signifies the opcode's value. May be larger or smaller than 8 bits. Zeros should be used to prefix the size if it cannot be represented (Each instruction must have the same opcode length).\n");
+	printf("\nFiles must end -a!\n");
 }

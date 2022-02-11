@@ -7,6 +7,7 @@
 
 #ifndef ui_h
 #define ui_h
+#include "../root.h"
 
 void ui_help(int argc, char** argv);
 void ui_generate(int argc, char** argv);
