@@ -20,6 +20,9 @@
 #define _MK_BLOCKQUOTE	0x08
 #define _MK_CODE		0x09
 #define _MK_LINE		0x0A
+#define _MK_TABLE		0x0B
+#define _MK_HEADER		0x0C
+#define _MK_TABLEFIELD	0x0D
 
 #define MKI_LINE_CR		0x1000
 #define MKI_LINE_LF		0x0100
@@ -37,7 +40,7 @@ typedef struct _mkfield {
 }mkfield_t;
 
 typedef struct _mkdoc {
-	u32 ElementCount;
+	int ElementCount;
 	mkfield_t* Elements;
 }mkdoc_t;
 
@@ -86,8 +89,7 @@ int mkd_addtable(mkdoc_t* Document, mktable_t* Table);
 
 int mkdt_addheader(mktable_t* Table, const char* Source, int Column);
 int mkdt_addfield(mktable_t* Table, const char* Field, int Row, int Column);
-void mkdt_deletefield(mktable_t* Table, int Reference);
-void mkdt_deleteheader(mktable_t* Table, int Reference);
+void mkdt_deleteelem(mktable_t* Table, int Reference);
 
 void mkd_deleteelem(mkdoc_t* Document, int Reference);
 
