@@ -13,28 +13,36 @@ extern int mki_newelem(mkdoc_t* Document, byte Type, const char* Primary, const 
 extern char* mki_getline(void);
 
 int mki_newtablelem(mktable_t* Table, byte Type, const char* Primary, int Row, int Column) {
+	if (Table->CurrentRow < Row)
+		Table->CurrentRow = Row;
+	if (Table->CurrentColumn < Column)
+		Table->CurrentColumn = Column;
 	if (Type == _MK_HEADER) {
 		Table->Headers = realloc(Table->Headers, (sizeof(mkheader_t) * (Table->HeaderCount + 1)));
 		Table->Headers[Table->HeaderCount].Reference = (Table->LastReference + 1);
 		Table->Headers[Table->HeaderCount].Text = malloc(strlen(Primary) + 1);
 		strcpy(Table->Headers[Table->HeaderCount].Text, Primary);
 		Table->Headers[Table->HeaderCount].Column = Column;
+		Table->HeaderCount++;
 	} else if (Type == _MK_TABLEFIELD) {
+		Table->Fields = realloc(Table->Fields, (sizeof(mktablefield_t) * (Table->FieldCount + 1)));
 		Table->Fields[Table->FieldCount].Reference = (Table->LastReference + 1);
 		Table->Fields[Table->FieldCount].Column = Column;
 		Table->Fields[Table->FieldCount].Row = Row;
 		Table->Fields[Table->FieldCount].Data = malloc(strlen(Primary) + 1);
 		strcpy(Table->Fields[Table->FieldCount].Data, Primary);
+		Table->FieldCount++;
 	}
 	Table->LastReference++;
 	return Table->LastReference;
 }
 
 int mkd_addtable(mkdoc_t* Document, mktable_t* Table) {
-	Document->ElementCount++;
+	//Document->ElementCount++;
 	char* CompiledTable = mki_compiletable(Table);
 	int Return = mki_newelem(Document, _MK_TABLE, CompiledTable, NULL);
 	free(CompiledTable);
+	free(Table);
 	return Return;
 }
 
@@ -107,14 +115,14 @@ char* mki_compiletable(mktable_t* Table) {
 	TableSizeLength++;
 	char* Return = malloc(TableSizeLength);
 	
-	for (int i = 0; i < (Table->CurrentColumn + 1); i++) {
+	for (int i = 0; i < (Table->CurrentColumn); i++) {
 		mkheader_t* Header = mktdi_getheaderbycolumn(Table->Headers, Table->HeaderCount, i);
 		strcat(Return, "**");
 		strcat(Return, Header->Text);
 		strcat(Return, "**|");
 	}
 	strcat(Return, mki_getline());
-	for (int r = 0; r < (Table->CurrentRow + 1); r++) {
+	for (int r = 0; r < (Table->CurrentRow); r++) {
 		for (int c = 0; c < (Table->CurrentColumn + 1); c++) {
 			strcat(Return, Table->Fields[c].Data);
 			strcat(Return, "|");
@@ -122,5 +130,11 @@ char* mki_compiletable(mktable_t* Table) {
 		strcat(Return, mki_getline());
 	}
 	
+	return Return;
+}
+
+mktable_t* mk_newtable(void) {
+	mktable_t* Return = malloc(sizeof(mktable_t));
+	memset(Return, 0, sizeof(mktable_t));
 	return Return;
 }
