@@ -39,12 +39,15 @@ void ui_generate(int argc, char** argv) {
 	}
 	char* Buffer = malloc(2048);
 	mkdoc_t* Document = mk_newdoc();
+	mkd_addheading1(Document, "Instructions");
 	while (1) {
 		fgets(Buffer, 2048, Input);
 		if (!strcmp(Buffer, "-a"))
 			break;
 		int Reference = psin_declare(Buffer);
-		
+		char* TotalName = malloc(256);
+		sprintf(TotalName, "%s (%s)", psin_getmnemonic(Reference), psin_getdesc(Reference));
+		mkd_addheading2(Document, TotalName);
 	}
 	char* Data = mk_compile(Document);
 	fwrite(Data, strlen(Data), 1, Output);

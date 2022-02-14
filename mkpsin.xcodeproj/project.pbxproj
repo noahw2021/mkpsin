@@ -18,6 +18,7 @@
 		8CBC42CA27B6B28D00D2FD3E /* psin_getdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC42C527B6B28D00D2FD3E /* psin_getdata.c */; };
 		8CBC42CB27B6B28D00D2FD3E /* psin_init.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC42C627B6B28D00D2FD3E /* psin_init.c */; };
 		8CBC42CC27B6B28D00D2FD3E /* psin_loadint.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC42C727B6B28D00D2FD3E /* psin_loadint.c */; };
+		8CF41B1E27BAA17F006CBC5F /* main_psindata.c in Sources */ = {isa = PBXBuildFile; fileRef = 8CF41B1D27BAA17F006CBC5F /* main_psindata.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -49,6 +50,7 @@
 		8CBC42C627B6B28D00D2FD3E /* psin_init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = psin_init.c; sourceTree = "<group>"; };
 		8CBC42C727B6B28D00D2FD3E /* psin_loadint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = psin_loadint.c; sourceTree = "<group>"; };
 		8CBC42C827B6B28D00D2FD3E /* psin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = psin.h; sourceTree = "<group>"; };
+		8CF41B1D27BAA17F006CBC5F /* main_psindata.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main_psindata.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				8C98CF5227B315D600EECD75 /* mk */,
 				8C925E7227AADBD400150F9E /* main.c */,
 				8C98CF5427B3175C00EECD75 /* root.h */,
+				8CF41B1D27BAA17F006CBC5F /* main_psindata.c */,
 			);
 			path = mkpsin;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 				8C2A65D327B6E37900264290 /* ui_syntax.c in Sources */,
 				8C925E7327AADBD400150F9E /* main.c in Sources */,
 				8CBC42CB27B6B28D00D2FD3E /* psin_init.c in Sources */,
+				8CF41B1E27BAA17F006CBC5F /* main_psindata.c in Sources */,
 				8CBC42CC27B6B28D00D2FD3E /* psin_loadint.c in Sources */,
 				8C2A65D127B6E36700264290 /* ui_generate.c in Sources */,
 				8C2A9F9227B40E6D004C98C8 /* mk_engine.c in Sources */,

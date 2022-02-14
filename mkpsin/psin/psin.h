@@ -29,12 +29,16 @@ byte psin_getoperandcsize(u32 Iterator);
 
 typedef struct psinentry {
 	str Mnemonic[16];
+	str Description[240];
 	byte Opcode;
 	byte RegMap;
 	byte PresentMap;
 	byte OperandASize;
 	byte OperandBSize;
 	byte OperandCSize;
+	str OperandAName[32];
+	str OperandBName[32];
+	str OperandCName[32];
 }psinentry_t;
 extern psinentry_t* InstructionMap;
 extern u32 InstructionCount;

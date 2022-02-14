@@ -6,6 +6,7 @@
 //
 
 #include <stdio.h>
+#include <string.h>
 #include "mk/mk.h"
 #include "ui/ui.h"
 

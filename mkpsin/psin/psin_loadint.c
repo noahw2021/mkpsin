@@ -42,11 +42,17 @@ u32 psin_declare(const char* Instruction) {
 	byte RegMap = 0;
 	byte Opcode = 0;
 	u32 Return;
+	char* Description = malloc(240);
+	char* OperandADesc = malloc(240);
+	char* OperandBDesc = malloc(240);
+	char* OperandCDesc = malloc(240);
+	int LocalIterator = 0;
 	
 	// Get Instruction Name
 	while (LocalData[StrIterator] != ' ') {
-		InstructionName[StrIterator] = LocalData[StrIterator];
+		InstructionName[StrIterator] = LocalData[LocalIterator];
 		StrIterator++;
+		LocalIterator++;
 	}
 	
 	// Get Opcode
@@ -59,6 +65,19 @@ u32 psin_declare(const char* Instruction) {
 	strncpy(TemporaryData, LocalData + StrIterator, 3);
 	Opcode = strtoul(TemporaryData, NULL, 16);
 	free(TemporaryData);
+	
+	// Get Description
+	StrIterator = 0;
+	while (LocalData[StrIterator] != '/') {
+		StrIterator++;
+	}
+	StrIterator += 2;
+	LocalIterator = 0;
+	while (LocalData[StrIterator] != '(') {
+		Description[LocalIterator] = LocalData[StrIterator];
+		StrIterator++;
+		LocalIterator++;
+	}
 	
 	// Get Operand A
 	StrIterator = 0;
@@ -95,7 +114,11 @@ u32 psin_declare(const char* Instruction) {
 	
 	OperandA = atoi(TemporaryData);
 	free(TemporaryData);
+	LocalIterator = 0;
+	while (LocalData[StrIterator] != ',')
+		StrIterator++;
 	while (LocalData[StrIterator] != ']') {
+		OperandADesc[LocalIterator] = LocalData[StrIterator];
 		StrIterator++;
 	}
 	
@@ -182,5 +205,9 @@ Create:
 	// Return
 	free(LocalData);
 	free(InstructionName);
+	free(Description);
+	free(OperandADesc);
+	free(OperandBDesc);
+	free(OperandCDesc);
 	return Return;
 }

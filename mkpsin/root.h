@@ -14,4 +14,6 @@ typedef unsigned long u32;
 typedef unsigned long long u64;
 typedef char str;
 
+void main_loadinst(void);
+
 #endif /* root_h */
