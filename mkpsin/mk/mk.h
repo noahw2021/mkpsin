@@ -41,12 +41,36 @@ typedef struct _mkdoc {
 	mkfield_t* Elements;
 }mkdoc_t;
 
+typedef struct _mkheader {
+	int Reference;
+	int Column;
+	str* Text;
+}mkheader_t;
+
+typedef struct _mktablefield {
+	int Reference;
+	int Row;
+	int Column;
+	str* Data;
+}mktablefield_t;
+
+typedef struct _mktable {
+	mkheader_t* Headers;
+	int HeaderCount;
+	mktablefield_t* Fields;
+	int FieldCount;
+	int CurrentRow;
+	int CurrentColumn;
+	int LastReference;
+}mktable_t;
+
 void mk_init(u16 LineEnding);
 void mk_shutdown(void);
 
 mkdoc_t* mk_newdoc(void);
+mktable_t* mk_newtable(void);
 char* mk_compile(mkdoc_t* Document);
-
+char* mki_compiletable(mktable_t* Table);
 
 int mkd_addheading1(mkdoc_t* Document, const char* Value);
 int mkd_addheading2(mkdoc_t* Document, const char* Value);
@@ -58,6 +82,12 @@ int mkd_addboldtext(mkdoc_t* Document, const char* Text);
 int mkd_additalicstext(mkdoc_t* Document, const char* Title);
 int mkd_addcode(mkdoc_t* Document, const char* Source, const char* LanguageStr);
 int mkd_addline(mkdoc_t* Document);
+int mkd_addtable(mkdoc_t* Document, mktable_t* Table);
+
+int mkdt_addheader(mktable_t* Table, const char* Source, int Column);
+int mkdt_addfield(mktable_t* Table, const char* Field, int Row, int Column);
+void mkdt_deletefield(mktable_t* Table, int Reference);
+void mkdt_deleteheader(mktable_t* Table, int Reference);
 
 void mkd_deleteelem(mkdoc_t* Document, int Reference);
 
