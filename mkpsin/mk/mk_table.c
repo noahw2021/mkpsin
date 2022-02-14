@@ -9,7 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-int mki_newelem(mkdoc_t* Document, byte Type, const char* Primary, const char* Secondary);
+extern int mki_newelem(mkdoc_t* Document, byte Type, const char* Primary, const char* Secondary);
+extern char* mki_getline(void);
 
 int mki_newtablelem(mktable_t* Table, byte Type, const char* Primary, int Row, int Column) {
 	if (Type == _MK_HEADER) {
@@ -77,7 +78,49 @@ void mkdt_deleteelem(mktable_t* Table, int Reference) {
 	Table->Fields = NewFields;
 }
 
+mkheader_t* mktdi_getheaderbycolumn(mkheader_t* Headers, int Count, int Column) {
+	for (int i = 0; i < Count; i++) {
+		if (Headers[i].Column == Column)
+			return &Headers[i];
+	}
+	return NULL;
+}
+mktablefield_t* mktdi_getfieldbycolumn(mktablefield_t* Fields, int Count, int Column) {
+	for (int i = 0; i < Count; i++)
+		if (Fields[i].Column == Column)
+			return &Fields[i];
+	return NULL;
+}
+mktablefield_t* mktdi_getfieldbyrow(mktablefield_t* Fields, int Count, int Row) {
+	for (int i = 0; i < Count; i++)
+		if (Fields[i].Row == Row)
+			return &Fields[i];
+	return NULL;
+}
 
 char* mki_compiletable(mktable_t* Table) {
-	return NULL;
+	int TableSizeLength = 75 + (Table->HeaderCount * 5) + (Table->FieldCount * 3);
+	for (int i = 0; i < Table->HeaderCount; i++)
+		TableSizeLength += strlen(Table->Headers[i].Text) + 1;
+	for (int i = 0; i < Table->FieldCount; i++)
+		TableSizeLength += strlen(Table->Fields[i].Data) + 1;
+	TableSizeLength++;
+	char* Return = malloc(TableSizeLength);
+	
+	for (int i = 0; i < (Table->CurrentColumn + 1); i++) {
+		mkheader_t* Header = mktdi_getheaderbycolumn(Table->Headers, Table->HeaderCount, i);
+		strcat(Return, "**");
+		strcat(Return, Header->Text);
+		strcat(Return, "**|");
+	}
+	strcat(Return, mki_getline());
+	for (int r = 0; r < (Table->CurrentRow + 1); r++) {
+		for (int c = 0; c < (Table->CurrentColumn + 1); c++) {
+			strcat(Return, Table->Fields[c].Data);
+			strcat(Return, "|");
+		}
+		strcat(Return, mki_getline());
+	}
+	
+	return Return;
 }

@@ -106,6 +106,9 @@ char* mk_compile(mkdoc_t* Document) {
 				sprintf(TotalOutBuf, "%s", mki_getline());	
 				mki_writestream(TotalOutBuf, &CurrentSize, &Used, Outstream);
 				break;
+			case _MK_TABLE:
+				sprintf(TotalOutBuf, "%s", CurField->Primary);
+				mki_writestream(TotalOutBuf, &CurrentSize, &Used, Outstream);
 			default:
 				sprintf(TotalOutBuf, "! INVALID ELEMENT TYPE !%s", mki_getline());
 				mki_writestream(TotalOutBuf, &CurrentSize, &Used, Outstream);
