@@ -93,15 +93,9 @@ mkheader_t* mktdi_getheaderbycolumn(mkheader_t* Headers, int Count, int Column) 
 	}
 	return NULL;
 }
-mktablefield_t* mktdi_getfieldbycolumn(mktablefield_t* Fields, int Count, int Column) {
+mktablefield_t* mktdi_getfieldbycolumnrow(mktablefield_t* Fields, int Count, int Column, int Row) {
 	for (int i = 0; i < Count; i++)
-		if (Fields[i].Column == Column)
-			return &Fields[i];
-	return NULL;
-}
-mktablefield_t* mktdi_getfieldbyrow(mktablefield_t* Fields, int Count, int Row) {
-	for (int i = 0; i < Count; i++)
-		if (Fields[i].Row == Row)
+		if (Fields[i].Column == Column && Fields[i].Row == Row)
 			return &Fields[i];
 	return NULL;
 }
@@ -124,7 +118,8 @@ char* mki_compiletable(mktable_t* Table) {
 	strcat(Return, mki_getline());
 	for (int r = 0; r < (Table->CurrentRow); r++) {
 		for (int c = 0; c < (Table->CurrentColumn + 1); c++) {
-			strcat(Return, Table->Fields[c].Data);
+			mktablefield_t* Field = mktdi_getfieldbycolumnrow(Table->Fields, Table->FieldCount, c, r);
+			strcat(Return, Field->Data);
 			strcat(Return, "|");
 		}
 		strcat(Return, mki_getline());

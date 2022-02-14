@@ -44,6 +44,8 @@ int main(int argc, char** argv) {
 	char* SourceArgument = argv[1];
 	if (argc < 2){
 		ui_help(argc, argv);
+		psin_shutdown();
+		return 0;
 	}
 	ArgumentBody(SourceArgument, "-g") {
 		ui_generate(argc, argv);

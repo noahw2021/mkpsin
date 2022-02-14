@@ -160,10 +160,6 @@ int psin_declare(const char* Instruction) {
 		strncpy(TemporaryData, LocalData + StrIterator, 1);
 	}
 	OperandB = atoi(TemporaryData);
-	while (LocalData[StrIterator] != ']') {
-		StrIterator++;
-	}
-	free(TemporaryData);
 	while (LocalData[StrIterator] != ',')
 		StrIterator++;
 	StrIterator++;
@@ -172,6 +168,11 @@ int psin_declare(const char* Instruction) {
 		LocalIterator++;
 		StrIterator++;
 	}
+	while (LocalData[StrIterator] != ']') {
+		StrIterator++;
+	}
+	free(TemporaryData);
+	
 	
 	// Get Operand C
 	while (LocalData[StrIterator] != '[') {
