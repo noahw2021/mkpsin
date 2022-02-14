@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 
-void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, byte Regmap, byte PresentMap, char* Name) {
+void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, byte Regmap, byte PresentMap, char* Name, char* Desc, char* OpADesc, char* OpBDesc, char* OpCDesc) {
 	if (InstructionCount == 0)
 		InstructionMap = malloc((InstructionCount + 1) * sizeof(psinentry_t));
 	else
@@ -24,14 +24,18 @@ void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, 
 	InstructionMap[InstructionCount].OperandASize = OperandA;
 	InstructionMap[InstructionCount].OperandBSize = OperandB;
 	InstructionMap[InstructionCount].OperandCSize = OperandC;
-
+	strncpy(InstructionMap[InstructionCount].OperandAName, OpADesc, 32);
+	strncpy(InstructionMap[InstructionCount].OperandBName, OpBDesc, 32);
+	strncpy(InstructionMap[InstructionCount].OperandCName, OpCDesc, 32);
+	strncpy(InstructionMap[InstructionCount].Description, Desc, 240);
+	
 	InstructionCount++;
 	return;
 }
 
 u32 psin_declare(const char* Instruction) {
 	// SET = 0x00, // Set Register (SET [R:(4,4),DEST] [R:(4,4),SRC]):16s
-	char* LocalData = malloc(strlen(Instruction) + 1);
+ 	char* LocalData = malloc(strlen(Instruction) + 1);
 	int StrIterator = 0;
 	strcpy(LocalData, Instruction);
 	
@@ -62,7 +66,7 @@ u32 psin_declare(const char* Instruction) {
 	}
 	StrIterator++;
 	char* TemporaryData = malloc(4);
-	strncpy(TemporaryData, LocalData + StrIterator, 3);
+	strncpy(TemporaryData, LocalData + StrIterator, 2);
 	Opcode = strtoul(TemporaryData, NULL, 16);
 	free(TemporaryData);
 	
@@ -71,7 +75,7 @@ u32 psin_declare(const char* Instruction) {
 	while (LocalData[StrIterator] != '/') {
 		StrIterator++;
 	}
-	StrIterator += 2;
+	StrIterator += 3;
 	LocalIterator = 0;
 	while (LocalData[StrIterator] != '(') {
 		Description[LocalIterator] = LocalData[StrIterator];
@@ -117,8 +121,10 @@ u32 psin_declare(const char* Instruction) {
 	LocalIterator = 0;
 	while (LocalData[StrIterator] != ',')
 		StrIterator++;
+	StrIterator++;
 	while (LocalData[StrIterator] != ']') {
 		OperandADesc[LocalIterator] = LocalData[StrIterator];
+		LocalIterator++;
 		StrIterator++;
 	}
 	
@@ -158,6 +164,15 @@ u32 psin_declare(const char* Instruction) {
 		StrIterator++;
 	}
 	free(TemporaryData);
+	while (LocalData[StrIterator] != ',')
+		StrIterator++;
+	StrIterator++;
+	while (LocalData[StrIterator] != ']') {
+		OperandBDesc[LocalIterator] = LocalData[StrIterator];
+		LocalIterator++;
+		StrIterator++;
+	}
+	
 	// Get Operand C
 	while (LocalData[StrIterator] != '[') {
 		if (LocalData[StrIterator] == ')') {
@@ -194,12 +209,21 @@ u32 psin_declare(const char* Instruction) {
 		StrIterator++;
 	}
 	free(TemporaryData);
+	while (LocalData[StrIterator] != ',')
+		StrIterator++;
+	StrIterator++;
+	while (LocalData[StrIterator] != ']') {
+		OperandCDesc[LocalIterator] = LocalData[StrIterator];
+		LocalIterator++;
+		StrIterator++;
+	}
+	
 	goto Create;
 	
 	// Create
 Create:
 	Return = 0;
-	psini_createinst(Opcode, OperandA, OperandB, OperandC, RegMap, PresentMap, InstructionName);
+	psini_createinst(Opcode, OperandA, OperandB, OperandC, RegMap, PresentMap, InstructionName, Description, OperandADesc, OperandBDesc, OperandCDesc);
 	Return = InstructionCount - 1;
 	
 	// Return

@@ -13,6 +13,7 @@
 #define ArgumentBody(Source, Name) if (!strcmp(Source, Name))
 
 int main(int argc, char** argv) {
+	main_loadinst();
 	char* SourceArgument = argv[1];
 	if (argc < 2){
 		ui_help(argc, argv);

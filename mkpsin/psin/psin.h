@@ -26,6 +26,7 @@ byte psin_getpresentmap(u32 Iterator);
 byte psin_getoperandasize(u32 Iterator);
 byte psin_getoperandbsize(u32 Iterator);
 byte psin_getoperandcsize(u32 Iterator);
+char* psin_getdesc(u32 Reference);
 
 typedef struct psinentry {
 	str Mnemonic[16];

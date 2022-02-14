@@ -34,3 +34,7 @@ byte psin_getoperandbsize(u32 Iterator) {
 byte psin_getoperandcsize(u32 Iterator) {
 	return InstructionMap[Iterator].OperandCSize;
 }
+
+char* psin_getdesc(u32 Reference) {
+	return InstructionMap[Reference].Description;
+}

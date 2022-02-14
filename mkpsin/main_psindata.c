@@ -6,6 +6,7 @@
 //
 
 #include "root.h"
+#include "psin/psin.h"
 
 void main_loadinst(void) {
 	psin_declare("SET = 0x00, // Set Register (SET [R:(4,4),DEST] [R:(4,4),SRC]):16");
