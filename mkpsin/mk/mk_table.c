@@ -47,7 +47,7 @@ int mkdt_addfield(mktable_t* Table, const char* Field, int Row, int Column) {
 
 void mkdt_deleteelem(mktable_t* Table, int Reference) {
 	mkheader_t* NewHeaders = malloc(sizeof(mkheader_t) * (Table->HeaderCount - 1));
-	mkfield_t* NewFields = malloc(sizeof(mkheader_t) * (Table->HeaderCount - 1));
+	mktablefield_t* NewFields = malloc(sizeof(mktablefield_t) * (Table->HeaderCount - 1));
 	int RefCount = 0;
 	
 	for (int i = 0; i < Table->HeaderCount; i++) {
@@ -79,5 +79,5 @@ void mkdt_deleteelem(mktable_t* Table, int Reference) {
 
 
 char* mki_compiletable(mktable_t* Table) {
-	
+	return NULL;
 }
