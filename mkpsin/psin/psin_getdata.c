@@ -38,3 +38,11 @@ byte psin_getoperandcsize(int Iterator) {
 char* psin_getdesc(int Reference) {
 	return InstructionMap[Reference].Description;
 }
+
+int psin_getoperandsize(int Reference) {
+	return InstructionMap[Reference].TotalInstructionSize;
+}
+
+int psin_getopcodesize(int Reference) {
+	return InstructionMap[Reference].TotalOpcodeSize;
+}

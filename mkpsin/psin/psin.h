@@ -8,9 +8,10 @@
 #ifndef psin_h
 #define psin_h
 #include "../root.h"
-// "parsepsin" Library v1.1 - 02/14/2022.
+// "parsepsin" Library v1.2 - 02/14/2022.
 /*
  Changelog:
+ -v1.2: Adds instruction & opcode sizes for more complex encoding schemes
  -v1.1: Adds descriptions and operand names
  -v1.0: Base implementation
  */
@@ -33,6 +34,8 @@ byte psin_getoperandasize(int Iterator);
 byte psin_getoperandbsize(int Iterator);
 byte psin_getoperandcsize(int Iterator);
 char* psin_getdesc(int Reference);
+int psin_getoperandsize(int Reference);
+int psin_getopcodesize(int Reference);
 
 typedef struct psinentry {
 	str Mnemonic[16];
@@ -46,6 +49,8 @@ typedef struct psinentry {
 	str OperandAName[32];
 	str OperandBName[32];
 	str OperandCName[32];
+	int TotalInstructionSize;
+	int TotalOpcodeSize;
 }psinentry_t;
 extern psinentry_t* InstructionMap;
 extern int InstructionCount;

@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 
-void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, byte Regmap, byte PresentMap, char* Name, char* Desc, char* OpADesc, char* OpBDesc, char* OpCDesc) {
+void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, byte Regmap, byte PresentMap, char* Name, char* Desc, char* OpADesc, char* OpBDesc, char* OpCDesc, int TotalSize) {
 	if (InstructionCount == 0)
 		InstructionMap = malloc((InstructionCount + 1) * sizeof(psinentry_t));
 	else
@@ -28,6 +28,11 @@ void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, 
 	strncpy(InstructionMap[InstructionCount].OperandBName, OpBDesc, 32);
 	strncpy(InstructionMap[InstructionCount].OperandCName, OpCDesc, 32);
 	strncpy(InstructionMap[InstructionCount].Description, Desc, 240);
+	InstructionMap[InstructionCount].TotalInstructionSize = TotalSize;
+	InstructionMap[InstructionCount].TotalOpcodeSize = TotalSize;
+	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandA;
+	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandB;
+	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandC;
 	
 	InstructionCount++;
 	return;
@@ -223,8 +228,12 @@ int psin_declare(const char* Instruction) {
 	
 	// Create
 Create:
+	StrIterator = 0;
+	while (LocalData[StrIterator] != ':')
+		StrIterator++;
+	int TotalSize = strtoull(LocalData + StrIterator, NULL, 10);
 	Return = 0;
-	psini_createinst(Opcode, OperandA, OperandB, OperandC, RegMap, PresentMap, InstructionName, Description, OperandADesc, OperandBDesc, OperandCDesc);
+	psini_createinst(Opcode, OperandA, OperandB, OperandC, RegMap, PresentMap, InstructionName, Description, OperandADesc, OperandBDesc, OperandCDesc, TotalSize);
 	Return = InstructionCount - 1;
 	
 	// Return
