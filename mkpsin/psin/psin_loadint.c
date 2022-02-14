@@ -33,7 +33,7 @@ void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, 
 	return;
 }
 
-u32 psin_declare(const char* Instruction) {
+int psin_declare(const char* Instruction) {
 	// SET = 0x00, // Set Register (SET [R:(4,4),DEST] [R:(4,4),SRC]):16s
  	char* LocalData = malloc(strlen(Instruction) + 1);
 	int StrIterator = 0;
@@ -45,7 +45,7 @@ u32 psin_declare(const char* Instruction) {
 	byte PresentMap = 0;
 	byte RegMap = 0;
 	byte Opcode = 0;
-	u32 Return;
+	int Return;
 	char* Description = malloc(240);
 	char* OperandADesc = malloc(240);
 	char* OperandBDesc = malloc(240);

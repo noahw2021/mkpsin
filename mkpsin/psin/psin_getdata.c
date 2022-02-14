@@ -7,34 +7,34 @@
 
 #include "psin.h"
 
-char* psin_getmnemonic(u32 Iterator) {
+char* psin_getmnemonic(int Iterator) {
 	return InstructionMap[Iterator].Mnemonic;
 }
 
-byte psin_getopcode(u32 Iterator) {
+byte psin_getopcode(int Iterator) {
 	return InstructionMap[Iterator].Opcode;
 }
 
-byte psin_getregmap(u32 Iterator) {
+byte psin_getregmap(int Iterator) {
 	return InstructionMap[Iterator].RegMap;
 }
 
-byte psin_getpresentmap(u32 Iterator) {
+byte psin_getpresentmap(int Iterator) {
 	return InstructionMap[Iterator].PresentMap;
 }
 
-byte psin_getoperandasize(u32 Iterator) {
+byte psin_getoperandasize(int Iterator) {
 	return InstructionMap[Iterator].OperandASize;
 }
 
-byte psin_getoperandbsize(u32 Iterator) {
+byte psin_getoperandbsize(int Iterator) {
 	return InstructionMap[Iterator].OperandBSize;
 }
 
-byte psin_getoperandcsize(u32 Iterator) {
+byte psin_getoperandcsize(int Iterator) {
 	return InstructionMap[Iterator].OperandCSize;
 }
 
-char* psin_getdesc(u32 Reference) {
+char* psin_getdesc(int Reference) {
 	return InstructionMap[Reference].Description;
 }

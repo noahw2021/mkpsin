@@ -21,14 +21,14 @@ char* rtl_strupr(char* Source, char* Destination) {
 	return Destination;
 }
 
-u32 psin_getbyopcode(byte Opcode) {
+int psin_getbyopcode(byte Opcode) {
 	for (int i = 0; i < InstructionCount; i++) {
 		if (InstructionMap[i].Opcode == Opcode)
 			return i;
 	}
 	return 0xFFFFFFFF;
 }
-u32 psin_getbymnemonic(char* Mnemonic) {
+int psin_getbymnemonic(char* Mnemonic) {
 	char* Uppercased = malloc(strlen(Mnemonic) + 1);
 	rtl_strupr(Mnemonic, Uppercased);
 	

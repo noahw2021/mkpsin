@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 psinentry_t* InstructionMap;
-u32 InstructionCount;
+int InstructionCount;
 
 void psin_init(void) {
 	InstructionCount = 0;
