@@ -45,9 +45,51 @@ void ui_generate(int argc, char** argv) {
 		if (!strcmp(Buffer, "-a"))
 			break;
 		int Reference = psin_declare(Buffer);
+		
+		// Get Instruction Names
 		char* TotalName = malloc(256);
 		sprintf(TotalName, "%s (%s)", psin_getmnemonic(Reference), psin_getdesc(Reference));
 		mkd_addheading2(Document, TotalName);
+		mkd_addtext(Document, psin_getdesc(Reference));
+		
+		// Instruction Table
+		byte PresentMap = psin_getpresentmap(Reference);
+		int InstructionCount = 0;
+		switch (PresentMap) {
+			case 0b000:
+				InstructionCount = 0;
+				break;
+			case 0b100:
+				InstructionCount = 1;
+				break;
+			case 0b110:
+				InstructionCount = 2;
+				break;
+			case 0b111:
+				InstructionCount = 3;
+				break;
+		}
+		mktable_t* InstructionTable = mk_newtable();
+		mkdt_addheader(InstructionTable, "Type", 0);
+		mkdt_addheader(InstructionTable, "Name", 2);
+		mkdt_addheader(InstructionTable, "Available Size", 3);
+		mkdt_addheader(InstructionTable, "Physical Size", 3);
+		
+		
+		// General Information Table
+		mktable_t* GeneralInformation = mk_newtable();
+		mkdt_addheader(GeneralInformation, "Instruction", 0);
+		mkdt_addheader(GeneralInformation, "Opcode", 1);
+		mkdt_addheader(GeneralInformation, "Operand Count", 2);
+		mkdt_addheader(GeneralInformation, "Total Instruction Size", 3);
+		mkdt_addheader(GeneralInformation, "Opcode Size", 4);
+		mkdt_addfield(GeneralInformation, psin_getmnemonic(Reference), 1, 0);
+		char* StrInt = malloc(12);
+		sprintf(StrInt, "%hX", psin_getopcode(Reference));
+		mkdt_addfield(GeneralInformation, StrInt, 1, 1);
+		sprintf(StrInt, "%i", InstructionCount);
+		mkdt_addfield(GeneralInformation, StrInt, 1, 2);
+		
 	}
 	char* Data = mk_compile(Document);
 	fwrite(Data, strlen(Data), 1, Output);
