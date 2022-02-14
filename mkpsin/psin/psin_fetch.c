@@ -1,6 +1,6 @@
 //
 //  psin_fetch.c
-//  plassemble
+//  mkpsin
 //
 //  Created by Noah Wooten on 2/7/22.
 //

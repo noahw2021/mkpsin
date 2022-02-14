@@ -1,6 +1,6 @@
 //
 //  psin.h
-//  plassemble
+//  mkpsin
 //
 //  Created by Noah Wooten on 2/7/22.
 //
@@ -8,6 +8,12 @@
 #ifndef psin_h
 #define psin_h
 #include "../root.h"
+// "parsepsin" Library v1.1 - 02/14/2022.
+/*
+ Changelog:
+ -v1.1: Adds descriptions and operand names
+ -v1.0: Base implementation
+ */
 
 void psin_init(void);
 void psin_shutdown(void);
