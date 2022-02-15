@@ -51,12 +51,12 @@ int psin_declare(const char* Instruction) {
 	char* OperandADesc = malloc(64);
 	char* OperandBDesc = malloc(64);
 	char* OperandCDesc = malloc(64);
-	u32 TotalInstructionSize;
-	int OperandASize, OperandAPhys;
-	int OperandBSize, OperandBPhys;
-	int OperandCSize, OperandCPhys;
+	u32 TotalInstructionSize = 0;
+	int OperandASize = 0, OperandAPhys = 0;
+	int OperandBSize = 0, OperandBPhys = 0;
+	int OperandCSize = 0, OperandCPhys = 0;
 	byte PresentMap = '\0', RegisterMap = '\0';
-	byte Opcode;
+	byte Opcode = '\0';
 	int DescriptionLength = 0;
 	int LocalIterator = 0, StrIterator = 0;
 	int CurrentStage = 0;
@@ -349,13 +349,27 @@ int psin_declare(const char* Instruction) {
 			}
 		}
 		if (CurrentStage == 7) { // Get Instruction Size
-			
+			switch (ParseString[StrIterator]) {
+				case ':':
+					if (ParseString[StrIterator + 1] != '(') {
+						TotalInstructionSize = atoi(ParseString + StrIterator + 1);
+						CurrentStage++;
+					} else {
+						StrIterator++;
+						break;
+					}
+					break;
+				default:
+					StrIterator++;
+			}
+		}
+		if (CurrentStage == 8) { // End of Sequence
+			break;
 		}
 		
 		StrIterator++;
 	}
-	
-	psini_createinst(Opcode, OperandASize, OperandBSize, OperandCSize, RegisterMap, PresentMap, Mnemonic, Description, OperandADesc, OperandBDesc, OperandCDesc, TotalInstructionSize, OperandAPhys, OperandBPhys, OperandCPhys);
+	psini_createinst(Opcode, OperandASize, OperandBSize, OperandCSize, RegisterMap, PresentMap, Mnemonic, Description, OperandADesc, OperandBDesc, OperandCDesc, (int)TotalInstructionSize, OperandAPhys, OperandBPhys, OperandCPhys);
 	
 	free(ParseString);
 	free(Mnemonic);
@@ -364,5 +378,5 @@ int psin_declare(const char* Instruction) {
 	free(OperandBDesc);
 	free(OperandCDesc);
 	free(TempStr);
-	return 0;
+	return InstructionCount - 1;
 }
