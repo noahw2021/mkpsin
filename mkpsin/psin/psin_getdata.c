@@ -58,3 +58,12 @@ char* psin_getoperandbdesc(int Reference) {
 char* psin_getoperandcdesc(int Reference) {
 	return InstructionMap[Reference].OperandCName;
 }
+int psin_getoperandaphyssize(int Reference) {
+	return InstructionMap[Reference].OperandAPhysSize;
+}
+int psin_getoperandbphyssize(int Reference) {
+	return InstructionMap[Reference].OperandBPhysSize;
+}
+int psin_getoperandcphyssize(int Reference) {
+	return InstructionMap[Reference].OperandCPhysSize;
+}

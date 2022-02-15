@@ -121,6 +121,8 @@ int psin_declare(const char* Instruction) {
 					break;
 			}
 			if (InterStage == 4) {
+				if (DescriptionLength == 0)
+					DescriptionLength++;
 				strncpy(Description, DescriptionBasePtr, DescriptionLength - 1);
 				DescriptionLength = 0;
 				InterStage = 0;

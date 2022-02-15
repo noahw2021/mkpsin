@@ -41,6 +41,9 @@ int psin_getopcodesize(int Reference);
 char* psin_getoperandadesc(int Reference);
 char* psin_getoperandbdesc(int Reference);
 char* psin_getoperandcdesc(int Reference);
+int psin_getoperandaphyssize(int Reference);
+int psin_getoperandbphyssize(int Reference);
+int psin_getoperandcphyssize(int Reference);
 
 typedef struct psinentry {
 	str Mnemonic[16];
