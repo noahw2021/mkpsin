@@ -46,3 +46,24 @@ int psin_getoperandsize(int Reference) {
 int psin_getopcodesize(int Reference) {
 	return InstructionMap[Reference].TotalOpcodeSize;
 }
+
+char* psin_getoperandadesc(int Reference) {
+	return InstructionMap[Reference].OperandAName;
+}
+
+char* psin_getoperandbdesc(int Reference) {
+	return InstructionMap[Reference].OperandBName;
+}
+
+char* psin_getoperandcdesc(int Reference) {
+	return InstructionMap[Reference].OperandCName;
+}
+int psin_getoperandaphyssize(int Reference) {
+	return InstructionMap[Reference].OperandAPhysSize;
+}
+int psin_getoperandbphyssize(int Reference) {
+	return InstructionMap[Reference].OperandBPhysSize;
+}
+int psin_getoperandcphyssize(int Reference) {
+	return InstructionMap[Reference].OperandCPhysSize;
+}

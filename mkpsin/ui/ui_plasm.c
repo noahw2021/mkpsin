@@ -1,50 +1,32 @@
 //
-//  ui_generate.c
+//  ui_plasm.c
 //  mkpsin
 //
-//  Created by Noah Wooten on 2/11/22.
+//  Created by Noah Wooten on 2/15/22.
 //
 
+#include "ui.h"
+#include "../mk/mk.h"
+#include "../psin/psin.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ui.h"
-#include "../psin/psin.h"
-#include "../mk/mk.h"
 
-void ui_generate(int argc, char** argv) {
-	char* Infile = argv[2];
-	char* Outfile = argv[3];
-	if (!Infile) {
-		printf("[ERR]: No Input file!\n");
-		return;
-	}
+void ui_forplasm(int argc, char** argv) {
+	char* Outfile = argv[2];
 	if (!Outfile) {
 		printf("[ERR]: No Output file!\n");
 		return;
 	}
-	FILE* Input = fopen(Infile, "r");
 	FILE* Output = fopen(Outfile, "w");
-	if (!Input) {
-		if (Output)
-			fclose(Output);
-		printf("[ERR]: Cannot open input file!\n");
-		return;
-	}
 	if (!Output) {
-		if (Input)
-			fclose(Input);
 		printf("[ERR]: Cannot open output file!\n");
 		return;
 	}
-	char* Buffer = malloc(2048);
 	mkdoc_t* Document = mk_newdoc();
 	mkd_addheading1(Document, "Instructions");
-	while (1) {
-		fgets(Buffer, 2048, Input);
-		if (!strcmp(Buffer, "-a"))
-			break;
-		int Reference = psin_declare(Buffer);
+	for (int i = 0; i < InstructionCount; i++) {
+		int Reference = i;
 		
 		// Get Instruction Names
 		char* TotalName = malloc(256);
@@ -81,43 +63,46 @@ void ui_generate(int argc, char** argv) {
 			byte UpCounter = 0;
 			if (PresentMap & 0b100) {
 				UpCounter++;
-				mkdt_addfield(InstructionTable, psin_getoperandadesc(Reference), UpCounter, 0);
+				mkdt_addfield(InstructionTable, psin_getoperandadesc(Reference), 1, 0);
 				if (Regmap & 0b100)
-					mkdt_addfield(InstructionTable, "Register", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Register", 1, 1);
 				else
-					mkdt_addfield(InstructionTable, "Immediate", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Immediate", 1, 1);
 			
 				sprintf(TempStr, "%i", psin_getoperandasize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 1, 2);
 				sprintf(TempStr, "%i", psin_getoperandaphyssize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 1, 3);
 			}
 			if (PresentMap & 0b010) {
 				UpCounter++;
-				mkdt_addfield(InstructionTable, psin_getoperandbdesc(Reference), UpCounter, 0);
+				mkdt_addfield(InstructionTable, psin_getoperandbdesc(Reference), 2, 0);
 				if (Regmap & 0b010)
-					mkdt_addfield(InstructionTable, "Register", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Register", 2, 1);
 				else
-					mkdt_addfield(InstructionTable, "Immediate", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Immediate", 2, 1);
+			
 				sprintf(TempStr, "%i", psin_getoperandbsize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 2, 2);
 				sprintf(TempStr, "%i", psin_getoperandbphyssize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 2, 3);
 			}
 			if (PresentMap & 0b001) {
 				UpCounter++;
-				mkdt_addfield(InstructionTable, psin_getoperandcdesc(Reference), UpCounter, 0);
+				mkdt_addfield(InstructionTable, psin_getoperandcdesc(Reference), 3, 0);
 				if (Regmap & 0b001)
-					mkdt_addfield(InstructionTable, "Register", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Register", 3, 1);
 				else
-					mkdt_addfield(InstructionTable, "Immediate", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Immediate", 3, 1);
+			
 				sprintf(TempStr, "%i", psin_getoperandcsize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 3, 2);
 				sprintf(TempStr, "%i", psin_getoperandcphyssize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 3, 2);
 			}
 			
 			mkd_addtable(Document, InstructionTable);
+			mkd_addline(Document);
 		} else {
 			mkd_addtext(Document, "This instruction takes zero operands.");
 			mkd_addline(Document);
@@ -132,7 +117,7 @@ void ui_generate(int argc, char** argv) {
 		mkdt_addheader(GeneralInformation, "Opcode Size", 4);
 		mkdt_addfield(GeneralInformation, psin_getmnemonic(Reference), 1, 0);
 		char* StrInt = malloc(12);
-		sprintf(StrInt, "%hX", psin_getopcode(Reference));
+		sprintf(StrInt, "%h02X", psin_getopcode(Reference));
 		mkdt_addfield(GeneralInformation, StrInt, 1, 1);
 		sprintf(StrInt, "%i", InstructionCount);
 		mkdt_addfield(GeneralInformation, StrInt, 1, 2);
@@ -148,7 +133,6 @@ void ui_generate(int argc, char** argv) {
 	char* Data = mk_compile(Document);
 	fwrite(Data, strlen(Data), 1, Output);
 	fclose(Output);
-	free(Buffer);
 	printf("[INFO]: Wrote to file!\n");
 	return;
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C255A1427BC2A06009A9039 /* ui_plasm.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C255A1327BC2A06009A9039 /* ui_plasm.c */; };
 		8C2A65CF27B6E2FA00264290 /* ui_help.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A65CE27B6E2FA00264290 /* ui_help.c */; };
 		8C2A65D127B6E36700264290 /* ui_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A65D027B6E36700264290 /* ui_generate.c */; };
 		8C2A65D327B6E37900264290 /* ui_syntax.c in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A65D227B6E37900264290 /* ui_syntax.c */; };
@@ -35,6 +36,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8C255A1327BC2A06009A9039 /* ui_plasm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ui_plasm.c; sourceTree = "<group>"; };
 		8C2A65CD27B6E29700264290 /* ui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ui.h; sourceTree = "<group>"; };
 		8C2A65CE27B6E2FA00264290 /* ui_help.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ui_help.c; sourceTree = "<group>"; };
 		8C2A65D027B6E36700264290 /* ui_generate.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ui_generate.c; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 				8C2A65CE27B6E2FA00264290 /* ui_help.c */,
 				8C2A65D027B6E36700264290 /* ui_generate.c */,
 				8C2A65D227B6E37900264290 /* ui_syntax.c */,
+				8C255A1327BC2A06009A9039 /* ui_plasm.c */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				8C2A65CF27B6E2FA00264290 /* ui_help.c in Sources */,
 				8C2A9F9427B410AE004C98C8 /* mk_docs.c in Sources */,
 				8CBC42C927B6B28D00D2FD3E /* psin_fetch.c in Sources */,
+				8C255A1427BC2A06009A9039 /* ui_plasm.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

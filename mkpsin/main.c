@@ -18,6 +18,7 @@
 int main(int argc, char** argv) {
 	psin_init();
 	main_loadinst();
+	mk_init(MKI_LINE_LF);
 	
 	char* SourceArgument = argv[1];
 	if (argc < 2){
@@ -32,6 +33,9 @@ int main(int argc, char** argv) {
 	}
 	ArgumentBody(SourceArgument, "-h") {
 		ui_help(argc, argv);
+	}
+	ArgumentBody(SourceArgument, "-p") {
+		ui_forplasm(argc, argv);
 	}
 GlobalReturn:
 	psin_shutdown();

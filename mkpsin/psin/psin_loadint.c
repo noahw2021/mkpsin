@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 
-void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, byte Regmap, byte PresentMap, char* Name, char* Desc, char* OpADesc, char* OpBDesc, char* OpCDesc, int TotalSize) {
+void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, byte Regmap, byte PresentMap, char* Name, char* Desc, char* OpADesc, char* OpBDesc, char* OpCDesc, int TotalSize, int OpAPhys, int OpBPhys, int OpCPhys) {
 	if (InstructionCount == 0)
 		InstructionMap = malloc((InstructionCount + 1) * sizeof(psinentry_t));
 	else
@@ -30,218 +30,363 @@ void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, 
 	strncpy(InstructionMap[InstructionCount].Description, Desc, 240);
 	InstructionMap[InstructionCount].TotalInstructionSize = TotalSize;
 	InstructionMap[InstructionCount].TotalOpcodeSize = TotalSize;
-	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandA;
-	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandB;
-	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandC;
+	InstructionMap[InstructionCount].TotalOpcodeSize -= OpAPhys;
+	InstructionMap[InstructionCount].TotalOpcodeSize -= OpBPhys;
+	InstructionMap[InstructionCount].TotalOpcodeSize -= OpCPhys;
+	InstructionMap[InstructionCount].OperandAPhysSize = OpAPhys;
+	InstructionMap[InstructionCount].OperandBPhysSize = OpBPhys;
+	InstructionMap[InstructionCount].OperandCPhysSize = OpCPhys;
 	
 	InstructionCount++;
 	return;
 }
 
+#define _ISFLAG_READY 		0x01
+#define _ISFLAG_FOUNDALL 	0x02
+#define _ISFLAG_SEEKINGDESC 0x04
+
 int psin_declare(const char* Instruction) {
-	// SET = 0x00, // Set Register (SET [R:(4,4),DEST] [R:(4,4),SRC]):16s
- 	char* LocalData = malloc(strlen(Instruction) + 1);
-	int StrIterator = 0;
-	strcpy(LocalData, Instruction);
-	
-	// Declarations
-	char* InstructionName = malloc(16);
-	u32 OperandA = 0, OperandB = 0, OperandC = 0;
-	byte PresentMap = 0;
-	byte RegMap = 0;
-	byte Opcode = 0;
-	int Return;
+	char* Mnemonic = malloc(32);
 	char* Description = malloc(240);
-	char* OperandADesc = malloc(240);
-	char* OperandBDesc = malloc(240);
-	char* OperandCDesc = malloc(240);
-	int LocalIterator = 0;
+	char* OperandADesc = malloc(64);
+	char* OperandBDesc = malloc(64);
+	char* OperandCDesc = malloc(64);
+	u32 TotalInstructionSize = 0;
+	int OperandASize = 0, OperandAPhys = 0;
+	int OperandBSize = 0, OperandBPhys = 0;
+	int OperandCSize = 0, OperandCPhys = 0;
+	byte PresentMap = '\0', RegisterMap = '\0';
+	byte Opcode = '\0';
+	int DescriptionLength = 0;
+	int LocalIterator = 0, StrIterator = 0;
+	int CurrentStage = 0;
+	char* TempStr = malloc(256);
+	int InterStage = 0;
+	char* DescriptionBasePtr = NULL;
+	byte Flags = 0;
+	int BackupIterator = 0;
+	int LocalDescriptionCounter = 0;
+	char* LocalDescriptionBasePtr = NULL;
 	
-	// Get Instruction Name
-	while (LocalData[StrIterator] != ' ') {
-		InstructionName[StrIterator] = LocalData[LocalIterator];
-		StrIterator++;
-		LocalIterator++;
-	}
+	char* ParseString = malloc(strlen(Instruction) + 1);
+	strcpy(ParseString, Instruction);
 	
-	// Get Opcode
-	StrIterator = 0;
-	while (LocalData[StrIterator] != 'x') {
-		StrIterator++;
-	}
-	StrIterator++;
-	char* TemporaryData = malloc(4);
-	strncpy(TemporaryData, LocalData + StrIterator, 2);
-	Opcode = strtoul(TemporaryData, NULL, 16);
-	free(TemporaryData);
+	// SET = 0x00, // Set Register (SET [R:(4,4),DEST] [R:(4,4),SRC]):16
 	
-	// Get Description
-	StrIterator = 0;
-	while (LocalData[StrIterator] != '/') {
-		StrIterator++;
-	}
-	StrIterator += 3;
-	LocalIterator = 0;
-	while (LocalData[StrIterator] != '(') {
-		Description[LocalIterator] = LocalData[StrIterator];
-		StrIterator++;
-		LocalIterator++;
-	}
-	
-	// Get Operand A
-	StrIterator = 0;
-	while (LocalData[StrIterator] != '[') {
-		if (LocalData[StrIterator] == ')') {
-			goto Create;
+	while (ParseString[StrIterator]) {
+		if (CurrentStage == 0) { // Get Mnemonic
+			switch (ParseString[StrIterator]) {
+				case ' ':
+					Mnemonic[LocalIterator + 1] = 0x00;
+					CurrentStage++;
+					break;
+				default:
+					Mnemonic[LocalIterator] = ParseString[StrIterator];
+					LocalIterator++;
+					break;
+			}
 		}
-		StrIterator++;
-	}
-	PresentMap |= 0b100;
-	StrIterator++;
-	switch (LocalData[StrIterator]) {
-		case 'I':
-			RegMap |= 0b000;
-			break;
-		case 'R':
-			RegMap |= 0b100;
-			break;
-		default:
-			printf("[ERR]: Invalid syntax in %s.\n", Instruction);
-	}
-	StrIterator += 2;
-	TemporaryData = malloc(5);
-	if (LocalData[StrIterator + 1] != ')') {
-		StrIterator += 3;
-	} else {
-		StrIterator += 2;
-	}
-	if (LocalData[StrIterator + 1] != ')') {
-		strncpy(TemporaryData, LocalData + StrIterator + 1, 2);
-	} else {
-		strncpy(TemporaryData, LocalData + StrIterator, 1);
-	}
-	
-	OperandA = atoi(TemporaryData);
-	free(TemporaryData);
-	LocalIterator = 0;
-	while (LocalData[StrIterator] != ',')
-		StrIterator++;
-	StrIterator++;
-	while (LocalData[StrIterator] != ']') {
-		OperandADesc[LocalIterator] = LocalData[StrIterator];
-		LocalIterator++;
-		StrIterator++;
-	}
-	
-	// Get Operand B
-	while (LocalData[StrIterator] != '[') {
-		if (LocalData[StrIterator] == ')') {
-			goto Create;
+		if (CurrentStage == 1) { // Get Opcode
+			switch (ParseString[StrIterator]) {
+				case 'x':
+					Opcode = strtol(ParseString + StrIterator + 1, NULL, 16);
+					CurrentStage++;
+					break;
+				default:
+					break;
+			}
 		}
-		StrIterator++;
-	}
-	PresentMap |= 0b010;
-	StrIterator++;
-	switch (LocalData[StrIterator]) {
-		case 'I':
-			RegMap |= 0b000;
-			break;
-		case 'R':
-			RegMap |= 0b010;
-			break;
-		default:
-			printf("[ERR]: Invalid syntax in %s.\n", Instruction);
-	}
- 	StrIterator += 2;
-	TemporaryData = malloc(5);
-	if (LocalData[StrIterator + 1] != ',') {
-		StrIterator += 3;
-	} else {
-		StrIterator += 2;
-	}
-	if (LocalData[StrIterator + 1] != ',') {
-		strncpy(TemporaryData, LocalData + StrIterator + 1, 2);
-	} else {
-		strncpy(TemporaryData, LocalData + StrIterator, 1);
-	}
-	OperandB = atoi(TemporaryData);
-	while (LocalData[StrIterator] != ',')
-		StrIterator++;
-	StrIterator++;
-	while (LocalData[StrIterator] != ']') {
-		OperandBDesc[LocalIterator] = LocalData[StrIterator];
-		LocalIterator++;
-		StrIterator++;
-	}
-	while (LocalData[StrIterator] != ']') {
-		StrIterator++;
-	}
-	free(TemporaryData);
-	
-	
-	// Get Operand C
-	while (LocalData[StrIterator] != '[') {
-		if (LocalData[StrIterator] == ')') {
-			goto Create;
+		if (CurrentStage == 2) { // Get Description
+			switch (ParseString[StrIterator]) {
+				case '/':
+					InterStage++;
+					break;
+				case ' ':
+					if (InterStage == 0)
+						break;
+					if (!(Flags & _ISFLAG_READY)) {
+						InterStage++;
+						Flags |= _ISFLAG_READY;
+						if (InterStage == 3) {
+							DescriptionBasePtr = ParseString + StrIterator + 1;
+						}
+					}
+					break;
+				case '(':
+					if (Flags & _ISFLAG_READY) {
+						DescriptionLength = (int)((ParseString + StrIterator) - (DescriptionBasePtr));
+						InterStage++;
+					}
+					break;
+				default:
+					break;
+			}
+			if (InterStage == 4) {
+				if (DescriptionLength == 0)
+					DescriptionLength++;
+				strncpy(Description, DescriptionBasePtr, DescriptionLength - 1);
+				Description[DescriptionLength - 1] = 0;
+				DescriptionLength = 0;
+				InterStage = 0;
+				CurrentStage++;
+				BackupIterator = StrIterator;
+			}
 		}
-		StrIterator++;
-	}
-	PresentMap |= 0b001;
-	StrIterator++;
-	switch (LocalData[StrIterator]) {
-		case 'I':
-			RegMap |= 0b000;
+		if (CurrentStage == 3) { // Get Operand Count
+			switch (ParseString[StrIterator]) {
+				case '[':
+					InterStage++;
+					break;
+				case ':':
+					if (ParseString[StrIterator + 1] != '(') {
+						Flags |= _ISFLAG_FOUNDALL;
+						StrIterator = BackupIterator;
+					}
+					break;
+			}
+			if (Flags & _ISFLAG_FOUNDALL) {
+				switch (InterStage) {
+					case 0:
+						PresentMap = 0b000;
+						break;
+					case 1:
+						PresentMap = 0b100;
+						break;
+					case 2:
+						PresentMap = 0b110;
+						break;
+					case 3:
+						PresentMap = 0b111;
+						break;
+					default:
+						printf("[ERR]: Parse error, %d is too many operands!\n", InterStage);
+						break;
+				}
+				InterStage = 0;
+				CurrentStage++;
+			}
+		}
+		if (CurrentStage == 4) { // Get Operand A
+			if (!(PresentMap & 0b100)) {
+				CurrentStage++;
+			} else {
+				switch (ParseString[StrIterator]) {
+					case '[': // Stage 0
+						if (InterStage == 0)
+							InterStage++;
+						break;
+					case 'I': // Stage 1
+					case 'R':
+						if (InterStage == 1) {
+							if (ParseString[StrIterator] == 'R')
+								RegisterMap |= 0b100;
+							InterStage++;
+							break;
+						} else {
+							break;
+						}
+					case '(': // Stage 2: Get Virtual Size
+						if (InterStage != 2)
+							break;
+						if (ParseString[StrIterator + 2] == ',')
+							strncpy(TempStr, ParseString + StrIterator + 1, 1);
+						else
+							strncpy(TempStr, ParseString + StrIterator + 1, 2);
+						OperandASize = atoi(TempStr);
+						InterStage++;
+						break;
+					case ',': // Stage 3: Get Physical Size
+						if (InterStage == 4) { // Stage 4: Get Description
+							Flags |= _ISFLAG_SEEKINGDESC;
+							if (LocalDescriptionCounter == 0)
+								LocalDescriptionBasePtr = ParseString + StrIterator;
+						} else {
+							if (InterStage != 3)
+								break;
+							if (ParseString[StrIterator + 2] == ')')
+								strncpy(TempStr, ParseString + StrIterator + 1, 1);
+							else
+								strncpy(TempStr, ParseString + StrIterator + 1, 2);
+							OperandAPhys = atoi(TempStr);
+							InterStage++;
+						}
+						break;
+					case ']':
+						if (InterStage == 4) {
+							if (Flags & _ISFLAG_SEEKINGDESC) {
+								strncpy(OperandADesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 2);
+								if (strstr(OperandADesc, "]"))
+									strstr(OperandADesc, "]")[0] = 0x00;
+								InterStage = 0;
+								Flags = 0;
+								LocalDescriptionCounter = 0;
+								CurrentStage++;
+							}
+						}
+						break;
+					default:
+						if (Flags & _ISFLAG_SEEKINGDESC)
+							LocalDescriptionCounter++;
+				}
+			}
+		}
+		if (CurrentStage == 5) { // Get Operand B
+			if (!(PresentMap & 0b010)) {
+				CurrentStage++;
+			} else {
+				switch (ParseString[StrIterator]) {
+					case '[': // Stage 0
+						if (InterStage == 0)
+							InterStage++;
+						break;
+					case 'I': // Stage 1
+					case 'R':
+						if (InterStage == 1) {
+							if (ParseString[StrIterator] == 'R')
+								RegisterMap |= 0b010;
+							InterStage++;
+							break;
+						} else {
+							break;
+						}
+					case '(': // Stage 2: Get Virtual Size
+						if (InterStage != 2)
+							break;
+						if (ParseString[StrIterator + 2] == ',')
+							strncpy(TempStr, ParseString + StrIterator + 1, 1);
+						else
+							strncpy(TempStr, ParseString + StrIterator + 1, 2);
+						OperandBSize = atoi(TempStr);
+						InterStage++;
+						break;
+					case ',': // Stage 3: Get Physical Size
+						if (InterStage == 4) { // Stage 4: Get Description
+							Flags |= _ISFLAG_SEEKINGDESC;
+							if (LocalDescriptionCounter == 0)
+								LocalDescriptionBasePtr = ParseString + StrIterator;
+						} else {
+							if (InterStage != 3)
+								break;
+							if (ParseString[StrIterator + 2] == ')')
+								strncpy(TempStr, ParseString + StrIterator + 1, 1);
+							else
+								strncpy(TempStr, ParseString + StrIterator + 1, 2);
+							OperandBPhys = atoi(TempStr);
+							InterStage++;
+						}
+						break;
+					case ']':
+						if (InterStage == 4) {
+							if (Flags & _ISFLAG_SEEKINGDESC) {
+								strncpy(OperandBDesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 2);
+								if (strstr(OperandBDesc, "]"))
+									strstr(OperandBDesc, "]")[0] = 0x00;
+								InterStage = 0;
+								LocalDescriptionCounter = 0;
+								Flags = 0;
+								CurrentStage++;
+							}
+						}
+						break;
+					default:
+						if (Flags & _ISFLAG_SEEKINGDESC)
+							LocalDescriptionCounter++;
+				}
+			}
+		}
+		if (CurrentStage == 6) { // Get Operand C
+			if (!(PresentMap & 0b001)) {
+				CurrentStage++;
+			} else {
+				switch (ParseString[StrIterator]) {
+					case '[': // Stage 0
+						if (InterStage == 0)
+							InterStage++;
+						break;
+					case 'I': // Stage 1
+					case 'R':
+						if (InterStage == 1) {
+							if (ParseString[StrIterator] == 'R')
+								RegisterMap |= 0b001;
+							InterStage++;
+							break;
+						} else {
+							break;
+						}
+					case '(': // Stage 2: Get Virtual Size
+						if (InterStage != 2)
+							break;
+						if (ParseString[StrIterator + 2] == ',')
+							strncpy(TempStr, ParseString + StrIterator + 1, 1);
+						else
+							strncpy(TempStr, ParseString + StrIterator + 1, 2);
+						OperandCSize = atoi(TempStr);
+						InterStage++;
+						break;
+					case ',': // Stage 3: Get Physical Size
+						if (InterStage == 4) { // Stage 4: Get Description
+							Flags |= _ISFLAG_SEEKINGDESC;
+							if (LocalDescriptionCounter == 0)
+								LocalDescriptionBasePtr = ParseString + StrIterator;
+						} else {
+							if (InterStage != 3)
+								break;
+							if (ParseString[StrIterator + 2] == ')')
+								strncpy(TempStr, ParseString + StrIterator + 1, 1);
+							else
+								strncpy(TempStr, ParseString + StrIterator + 1, 2);
+							OperandCPhys = atoi(TempStr);
+							InterStage++;
+						}
+						break;
+					case ']':
+						if (InterStage == 4) {
+							if (Flags & _ISFLAG_SEEKINGDESC) {
+								strncpy(OperandCDesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 2);
+								if (strstr(OperandCDesc, "]"))
+									strstr(OperandCDesc, "]")[0] = 0x00;
+								InterStage = 0;
+								Flags = 0;
+								LocalDescriptionCounter = 0;
+								CurrentStage++;
+							}
+						}
+						break;
+					default:
+						if (Flags & _ISFLAG_SEEKINGDESC)
+							LocalDescriptionCounter++;
+				}
+			}
+		}
+		if (CurrentStage == 7) { // Get Instruction Size
+			switch (ParseString[StrIterator]) {
+				case ':':
+					if (ParseString[StrIterator + 1] != '(') {
+						TotalInstructionSize = atoi(ParseString + StrIterator + 1);
+						CurrentStage++;
+					} else {
+						StrIterator++;
+						break;
+					}
+					break;
+				default:
+					StrIterator++;
+			}
+		}
+		if (CurrentStage == 8) { // End of Sequence
 			break;
-		case 'R':
-			RegMap |= 0b001;
-			break;
-		default:
-			printf("[ERR]: Invalid syntax in %s.\n", Instruction);
-	}
-	StrIterator += 2;
-	TemporaryData = malloc(5);
-	if (LocalData[StrIterator + 1] != ',') {
-		StrIterator += 3;
-	} else {
-		StrIterator += 2;
-	}
-	if (LocalData[StrIterator + 1] != ',') {
-		strncpy(TemporaryData, LocalData + StrIterator + 1, 2);
-	} else {
-		strncpy(TemporaryData, LocalData + StrIterator, 1);
-	}
-	OperandC = atoi(TemporaryData);
-	while (LocalData[StrIterator] != ']') {
+		}
+		
 		StrIterator++;
 	}
-	free(TemporaryData);
-	while (LocalData[StrIterator] != ',')
-		StrIterator++;
-	StrIterator++;
-	while (LocalData[StrIterator] != ']') {
-		OperandCDesc[LocalIterator] = LocalData[StrIterator];
-		LocalIterator++;
-		StrIterator++;
-	}
+	psini_createinst(Opcode, OperandASize, OperandBSize, OperandCSize, RegisterMap, PresentMap, Mnemonic, Description, OperandADesc, OperandBDesc, OperandCDesc, (int)TotalInstructionSize, OperandAPhys, OperandBPhys, OperandCPhys);
 	
-	goto Create;
-	
-	// Create
-Create:
-	StrIterator = 0;
-	while (LocalData[StrIterator] != ':')
-		StrIterator++;
-	int TotalSize = strtoull(LocalData + StrIterator, NULL, 10);
-	Return = 0;
-	psini_createinst(Opcode, OperandA, OperandB, OperandC, RegMap, PresentMap, InstructionName, Description, OperandADesc, OperandBDesc, OperandCDesc, TotalSize);
-	Return = InstructionCount - 1;
-	
-	// Return
-	free(LocalData);
-	free(InstructionName);
+	free(ParseString);
+	free(Mnemonic);
 	free(Description);
 	free(OperandADesc);
 	free(OperandBDesc);
 	free(OperandCDesc);
-	return Return;
+	free(TempStr);
+	return InstructionCount - 1;
 }

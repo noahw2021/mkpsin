@@ -109,16 +109,23 @@ char* mki_compiletable(mktable_t* Table) {
 	TableSizeLength++;
 	char* Return = malloc(TableSizeLength);
 	
+	mkdt_addheader(Table, "Dummy", Table->CurrentColumn + 1);
+	
 	for (int i = 0; i < (Table->CurrentColumn); i++) {
 		mkheader_t* Header = mktdi_getheaderbycolumn(Table->Headers, Table->HeaderCount, i);
-		strcat(Return, "**");
 		strcat(Return, Header->Text);
-		strcat(Return, "**|");
+		strcat(Return, "|");
+	}
+	strcat(Return, "\n");
+	for (int i = 0; i < (Table->CurrentRow); i++) {
+		strcat(Return, "---|");
 	}
 	strcat(Return, mki_getline());
-	for (int r = 0; r < (Table->CurrentRow); r++) {
-		for (int c = 0; c < (Table->CurrentColumn + 1); c++) {
+	for (int r = 1; r < (Table->CurrentRow); r++) {
+		for (int c = 0; c < (Table->CurrentColumn); c++) {
 			mktablefield_t* Field = mktdi_getfieldbycolumnrow(Table->Fields, Table->FieldCount, c, r);
+			if (!Field)
+				continue;
 			strcat(Return, Field->Data);
 			strcat(Return, "|");
 		}
