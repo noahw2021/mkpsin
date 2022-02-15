@@ -111,9 +111,12 @@ char* mki_compiletable(mktable_t* Table) {
 	
 	for (int i = 0; i < (Table->CurrentColumn); i++) {
 		mkheader_t* Header = mktdi_getheaderbycolumn(Table->Headers, Table->HeaderCount, i);
-		strcat(Return, "**");
 		strcat(Return, Header->Text);
-		strcat(Return, "**|");
+		strcat(Return, "|");
+	}
+	strcat(Return, "\n");
+	for (int i = 0; i < (Table->CurrentRow); i++) {
+		strcat(Return, "---|");
 	}
 	strcat(Return, mki_getline());
 	for (int r = 1; r < (Table->CurrentRow); r++) {
