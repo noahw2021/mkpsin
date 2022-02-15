@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 
-void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, byte Regmap, byte PresentMap, char* Name, char* Desc, char* OpADesc, char* OpBDesc, char* OpCDesc, int TotalSize) {
+void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, byte Regmap, byte PresentMap, char* Name, char* Desc, char* OpADesc, char* OpBDesc, char* OpCDesc, int TotalSize, u32 OpAPhys, u32 OpBPhys, u32 OpCPhys) {
 	if (InstructionCount == 0)
 		InstructionMap = malloc((InstructionCount + 1) * sizeof(psinentry_t));
 	else
@@ -33,6 +33,9 @@ void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, 
 	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandA;
 	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandB;
 	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandC;
+	InstructionMap[InstructionCount].OperandAPhysSize = OpAPhys;
+	InstructionMap[InstructionCount].OperandBPhysSize = OpBPhys;
+	InstructionMap[InstructionCount].OperandCPhysSize = OpCPhys;
 	
 	InstructionCount++;
 	return;
@@ -47,6 +50,7 @@ int psin_declare(const char* Instruction) {
 	// Declarations
 	char* InstructionName = malloc(16);
 	u32 OperandA = 0, OperandB = 0, OperandC = 0;
+	u32 OpAPhys = 0, OpBPhys = 0, OpCPhys = 0;
 	byte PresentMap = 0;
 	byte RegMap = 0;
 	byte Opcode = 0;
@@ -231,9 +235,9 @@ Create:
 	StrIterator = 0;
 	while (LocalData[StrIterator] != ':')
 		StrIterator++;
-	int TotalSize = strtoull(LocalData + StrIterator, NULL, 10);
+	int TotalSize = atoi(LocalData + StrIterator);
 	Return = 0;
-	psini_createinst(Opcode, OperandA, OperandB, OperandC, RegMap, PresentMap, InstructionName, Description, OperandADesc, OperandBDesc, OperandCDesc, TotalSize);
+	psini_createinst(Opcode, OperandA, OperandB, OperandC, RegMap, PresentMap, InstructionName, Description, OperandADesc, OperandBDesc, OperandCDesc, TotalSize, OpAPhys, OpBPhys, OpCPhys);
 	Return = InstructionCount - 1;
 	
 	// Return
