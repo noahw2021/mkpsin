@@ -8,14 +8,14 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "6437ED06-7F3C-4782-ACEB-E51580C16E1B"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mkpsin/psin/psin_loadint.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "45"
-            endingLineNumber = "45"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
             landmarkName = "psin_declare(Instruction)"
             landmarkType = "9">
          </BreakpointContent>
@@ -33,22 +33,6 @@
             startingLineNumber = "12"
             endingLineNumber = "12"
             landmarkName = "main_loadinst()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "C2B982DA-FBF0-4617-B2B7-E24A18B347D0"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "mkpsin/psin/psin_loadint.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "134"
-            endingLineNumber = "134"
-            landmarkName = "psin_declare(Instruction)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

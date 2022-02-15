@@ -8,9 +8,10 @@
 #ifndef psin_h
 #define psin_h
 #include "../root.h"
-// "parsepsin" Library v1.2 - 02/15/2022.
+// "parsepsin" Library v2.0 - 02/15/2022.
 /*
  Changelog:
+ -v1.3: Revamps parsing library
  -v1.2.1: Adds instruction physical size support
  -v1.2: Adds instruction & opcode sizes for more complex encoding schemes
  -v1.1: Adds descriptions and operand names
