@@ -46,3 +46,15 @@ int psin_getoperandsize(int Reference) {
 int psin_getopcodesize(int Reference) {
 	return InstructionMap[Reference].TotalOpcodeSize;
 }
+
+char* psin_getoperandadesc(int Reference) {
+	return InstructionMap[Reference].OperandAName;
+}
+
+char* psin_getoperandbdesc(int Reference) {
+	return InstructionMap[Reference].OperandBName;
+}
+
+char* psin_getoperandcdesc(int Reference) {
+	return InstructionMap[Reference].OperandCName;
+}

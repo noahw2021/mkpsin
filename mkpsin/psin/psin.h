@@ -36,6 +36,9 @@ byte psin_getoperandcsize(int Iterator);
 char* psin_getdesc(int Reference);
 int psin_getoperandsize(int Reference);
 int psin_getopcodesize(int Reference);
+char* psin_getoperandadesc(int Reference);
+char* psin_getoperandbdesc(int Reference);
+char* psin_getoperandcdesc(int Reference);
 
 typedef struct psinentry {
 	str Mnemonic[16];

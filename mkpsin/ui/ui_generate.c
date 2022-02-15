@@ -69,12 +69,51 @@ void ui_generate(int argc, char** argv) {
 				InstructionCount = 3;
 				break;
 		}
-		mktable_t* InstructionTable = mk_newtable();
-		mkdt_addheader(InstructionTable, "Type", 0);
-		mkdt_addheader(InstructionTable, "Name", 2);
-		mkdt_addheader(InstructionTable, "Available Size", 3);
-		mkdt_addheader(InstructionTable, "Physical Size", 3);
+		byte Regmap = psin_getregmap(Reference);
+		char* TempStr = malloc(4096);
 		
+		if (PresentMap != 0b000) {
+			mktable_t* InstructionTable = mk_newtable();
+			mkdt_addheader(InstructionTable, "Name", 0);
+			mkdt_addheader(InstructionTable, "Type", 1);
+			mkdt_addheader(InstructionTable, "Available Size", 2);
+			mkdt_addheader(InstructionTable, "Physical Size", 3);
+			byte UpCounter = 0;
+			if (PresentMap & 0b100) {
+				UpCounter++;
+				mkdt_addfield(InstructionTable, psin_getoperandadesc(Reference), UpCounter, 0);
+				if (Regmap & 0b100)
+					mkdt_addfield(InstructionTable, "Register", UpCounter, 1);
+				else
+					mkdt_addfield(InstructionTable, "Immediate", UpCounter, 1);
+			
+				sprintf(TempStr, "%i", psin_getoperandasize(Reference));
+				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+			}
+			if (PresentMap & 0b010) {
+				UpCounter++;
+				mkdt_addfield(InstructionTable, psin_getoperandbdesc(Reference), UpCounter, 0);
+				if (Regmap & 0b010)
+					mkdt_addfield(InstructionTable, "Register", UpCounter, 1);
+				else
+					mkdt_addfield(InstructionTable, "Immediate", UpCounter, 1);
+				sprintf(TempStr, "%i", psin_getoperandbsize(Reference));
+				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+			}
+			if (PresentMap & 0b001) {
+				UpCounter++;
+				mkdt_addfield(InstructionTable, psin_getoperandcdesc(Reference), UpCounter, 0);
+				if (Regmap & 0b001)
+					mkdt_addfield(InstructionTable, "Register", UpCounter, 1);
+				else
+					mkdt_addfield(InstructionTable, "Immediate", UpCounter, 1);
+				sprintf(TempStr, "%i", psin_getoperandcsize(Reference));
+				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+			}
+		} else {
+			mkd_addtext(Document, "This instruction takes zero operands.");
+			mkd_addline(Document);
+		}
 		
 		// General Information Table
 		mktable_t* GeneralInformation = mk_newtable();
@@ -89,7 +128,13 @@ void ui_generate(int argc, char** argv) {
 		mkdt_addfield(GeneralInformation, StrInt, 1, 1);
 		sprintf(StrInt, "%i", InstructionCount);
 		mkdt_addfield(GeneralInformation, StrInt, 1, 2);
-		
+		sprintf(StrInt, "%i", psin_getoperandsize(Reference));
+		mkdt_addfield(GeneralInformation, StrInt, 1, 3);
+		sprintf(StrInt, "%i", psin_getopcodesize(Reference));
+		mkdt_addfield(GeneralInformation, StrInt, 1, 4);
+		free(StrInt);
+	
+		free(TempStr);
 	}
 	char* Data = mk_compile(Document);
 	fwrite(Data, strlen(Data), 1, Output);
