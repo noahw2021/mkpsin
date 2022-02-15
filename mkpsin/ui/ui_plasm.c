@@ -76,27 +76,27 @@ void ui_forplasm(int argc, char** argv) {
 			}
 			if (PresentMap & 0b010) {
 				UpCounter++;
-				mkdt_addfield(InstructionTable, psin_getoperandbdesc(Reference), 0, 1);
+				mkdt_addfield(InstructionTable, psin_getoperandbdesc(Reference), 2, 0);
 				if (Regmap & 0b010)
-					mkdt_addfield(InstructionTable, "Register", 1, 1);
+					mkdt_addfield(InstructionTable, "Register", 2, 1);
 				else
-					mkdt_addfield(InstructionTable, "Immediate", 1, 1);
+					mkdt_addfield(InstructionTable, "Immediate", 2, 1);
 			
 				sprintf(TempStr, "%i", psin_getoperandbsize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, 2, 1);
+				mkdt_addfield(InstructionTable, TempStr, 2, 2);
 				sprintf(TempStr, "%i", psin_getoperandbphyssize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, 3, 1);
+				mkdt_addfield(InstructionTable, TempStr, 2, 3);
 			}
 			if (PresentMap & 0b001) {
 				UpCounter++;
-				mkdt_addfield(InstructionTable, psin_getoperandcdesc(Reference), 0, 2);
+				mkdt_addfield(InstructionTable, psin_getoperandcdesc(Reference), 3, 0);
 				if (Regmap & 0b001)
-					mkdt_addfield(InstructionTable, "Register", 1, 2);
+					mkdt_addfield(InstructionTable, "Register", 3, 1);
 				else
-					mkdt_addfield(InstructionTable, "Immediate", 1, 2);
+					mkdt_addfield(InstructionTable, "Immediate", 3, 1);
 			
 				sprintf(TempStr, "%i", psin_getoperandcsize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, 2, 2);
+				mkdt_addfield(InstructionTable, TempStr, 3, 2);
 				sprintf(TempStr, "%i", psin_getoperandcphyssize(Reference));
 				mkdt_addfield(InstructionTable, TempStr, 3, 2);
 			}
@@ -117,7 +117,7 @@ void ui_forplasm(int argc, char** argv) {
 		mkdt_addheader(GeneralInformation, "Opcode Size", 4);
 		mkdt_addfield(GeneralInformation, psin_getmnemonic(Reference), 1, 0);
 		char* StrInt = malloc(12);
-		sprintf(StrInt, "%hX", psin_getopcode(Reference));
+		sprintf(StrInt, "%h02X", psin_getopcode(Reference));
 		mkdt_addfield(GeneralInformation, StrInt, 1, 1);
 		sprintf(StrInt, "%i", InstructionCount);
 		mkdt_addfield(GeneralInformation, StrInt, 1, 2);

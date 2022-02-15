@@ -30,9 +30,9 @@ void psini_createinst(byte Opcode, byte OperandA, byte OperandB, byte OperandC, 
 	strncpy(InstructionMap[InstructionCount].Description, Desc, 240);
 	InstructionMap[InstructionCount].TotalInstructionSize = TotalSize;
 	InstructionMap[InstructionCount].TotalOpcodeSize = TotalSize;
-	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandA;
-	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandB;
-	InstructionMap[InstructionCount].TotalOpcodeSize -= OperandC;
+	InstructionMap[InstructionCount].TotalOpcodeSize -= OpAPhys;
+	InstructionMap[InstructionCount].TotalOpcodeSize -= OpBPhys;
+	InstructionMap[InstructionCount].TotalOpcodeSize -= OpCPhys;
 	InstructionMap[InstructionCount].OperandAPhysSize = OpAPhys;
 	InstructionMap[InstructionCount].OperandBPhysSize = OpBPhys;
 	InstructionMap[InstructionCount].OperandCPhysSize = OpCPhys;
@@ -77,6 +77,7 @@ int psin_declare(const char* Instruction) {
 		if (CurrentStage == 0) { // Get Mnemonic
 			switch (ParseString[StrIterator]) {
 				case ' ':
+					Mnemonic[LocalIterator + 1] = 0x00;
 					CurrentStage++;
 					break;
 				default:
@@ -124,6 +125,7 @@ int psin_declare(const char* Instruction) {
 				if (DescriptionLength == 0)
 					DescriptionLength++;
 				strncpy(Description, DescriptionBasePtr, DescriptionLength - 1);
+				Description[DescriptionLength - 1] = 0;
 				DescriptionLength = 0;
 				InterStage = 0;
 				CurrentStage++;
@@ -212,7 +214,9 @@ int psin_declare(const char* Instruction) {
 					case ']':
 						if (InterStage == 4) {
 							if (Flags & _ISFLAG_SEEKINGDESC) {
-								strncpy(OperandADesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter);
+								strncpy(OperandADesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 2);
+								if (strstr(OperandADesc, "]"))
+									strstr(OperandADesc, "]")[0] = 0x00;
 								InterStage = 0;
 								Flags = 0;
 								LocalDescriptionCounter = 0;
@@ -274,7 +278,9 @@ int psin_declare(const char* Instruction) {
 					case ']':
 						if (InterStage == 4) {
 							if (Flags & _ISFLAG_SEEKINGDESC) {
-								strncpy(OperandBDesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 1);
+								strncpy(OperandBDesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 2);
+								if (strstr(OperandBDesc, "]"))
+									strstr(OperandBDesc, "]")[0] = 0x00;
 								InterStage = 0;
 								LocalDescriptionCounter = 0;
 								Flags = 0;
@@ -336,7 +342,9 @@ int psin_declare(const char* Instruction) {
 					case ']':
 						if (InterStage == 4) {
 							if (Flags & _ISFLAG_SEEKINGDESC) {
-								strncpy(OperandCDesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 1);
+								strncpy(OperandCDesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 2);
+								if (strstr(OperandCDesc, "]"))
+									strstr(OperandCDesc, "]")[0] = 0x00;
 								InterStage = 0;
 								Flags = 0;
 								LocalDescriptionCounter = 0;
