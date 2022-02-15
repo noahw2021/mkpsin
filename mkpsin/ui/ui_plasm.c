@@ -60,46 +60,49 @@ void ui_forplasm(int argc, char** argv) {
 			mkdt_addheader(InstructionTable, "Type", 1);
 			mkdt_addheader(InstructionTable, "Available Size", 2);
 			mkdt_addheader(InstructionTable, "Physical Size", 3);
-			byte UpCounter = 255;
+			byte UpCounter = 0;
 			if (PresentMap & 0b100) {
 				UpCounter++;
-				mkdt_addfield(InstructionTable, psin_getoperandadesc(Reference), UpCounter, 0);
+				mkdt_addfield(InstructionTable, psin_getoperandadesc(Reference), 1, 0);
 				if (Regmap & 0b100)
-					mkdt_addfield(InstructionTable, "Register", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Register", 1, 1);
 				else
-					mkdt_addfield(InstructionTable, "Immediate", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Immediate", 1, 1);
 			
 				sprintf(TempStr, "%i", psin_getoperandasize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 1, 2);
 				sprintf(TempStr, "%i", psin_getoperandaphyssize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 1, 3);
 			}
 			if (PresentMap & 0b010) {
 				UpCounter++;
-				mkdt_addfield(InstructionTable, psin_getoperandbdesc(Reference), UpCounter, 0);
+				mkdt_addfield(InstructionTable, psin_getoperandbdesc(Reference), 0, 1);
 				if (Regmap & 0b010)
-					mkdt_addfield(InstructionTable, "Register", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Register", 1, 1);
 				else
-					mkdt_addfield(InstructionTable, "Immediate", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Immediate", 1, 1);
+			
 				sprintf(TempStr, "%i", psin_getoperandbsize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 2, 1);
 				sprintf(TempStr, "%i", psin_getoperandbphyssize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 3, 1);
 			}
 			if (PresentMap & 0b001) {
 				UpCounter++;
-				mkdt_addfield(InstructionTable, psin_getoperandcdesc(Reference), UpCounter, 0);
+				mkdt_addfield(InstructionTable, psin_getoperandcdesc(Reference), 0, 2);
 				if (Regmap & 0b001)
-					mkdt_addfield(InstructionTable, "Register", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Register", 1, 2);
 				else
-					mkdt_addfield(InstructionTable, "Immediate", UpCounter, 1);
+					mkdt_addfield(InstructionTable, "Immediate", 1, 2);
+			
 				sprintf(TempStr, "%i", psin_getoperandcsize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 2, 2);
 				sprintf(TempStr, "%i", psin_getoperandcphyssize(Reference));
-				mkdt_addfield(InstructionTable, TempStr, UpCounter, 2);
+				mkdt_addfield(InstructionTable, TempStr, 3, 2);
 			}
 			
 			mkd_addtable(Document, InstructionTable);
+			mkd_addline(Document);
 		} else {
 			mkd_addtext(Document, "This instruction takes zero operands.");
 			mkd_addline(Document);

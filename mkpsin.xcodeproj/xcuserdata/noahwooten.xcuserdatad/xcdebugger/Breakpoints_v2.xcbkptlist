@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C3D6E3DE-C8FB-4F64-861E-AA589E0DF1F9"
+            uuid = "18AAEEB3-7477-4988-A85A-4DD1CD46699F"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "mkpsin/main.c"
+            filePath = "mkpsin/ui/ui_plasm.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "21"
-            endingLineNumber = "21"
-            landmarkName = "main(argc, argv)"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "ui_forplasm(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

@@ -53,10 +53,10 @@ void mki_writestream(char* Writing, u32* Size, u32* Used, char* Stream) {
 }
 
 char* mk_compile(mkdoc_t* Document) {
-	u32 CurrentSize = 5120;
+	u32 CurrentSize = 20000;
 	u32 Used = 0;
-	char* Outstream = malloc(5120);
-	memset(Outstream, 0, 5120);
+	char* Outstream = malloc(20000);
+	memset(Outstream, 0, 20000);
 	
 	for (int i = 0; i < Document->ElementCount; i++) {
 		mkfield_t* CurField = &Document->Elements[i];

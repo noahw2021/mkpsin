@@ -109,6 +109,8 @@ char* mki_compiletable(mktable_t* Table) {
 	TableSizeLength++;
 	char* Return = malloc(TableSizeLength);
 	
+	mkdt_addheader(Table, "Dummy", Table->CurrentColumn + 1);
+	
 	for (int i = 0; i < (Table->CurrentColumn); i++) {
 		mkheader_t* Header = mktdi_getheaderbycolumn(Table->Headers, Table->HeaderCount, i);
 		strcat(Return, Header->Text);
