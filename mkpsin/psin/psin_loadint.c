@@ -101,11 +101,13 @@ int psin_declare(const char* Instruction) {
 					InterStage++;
 					break;
 				case ' ':
+					if (InterStage == 0)
+						break;
 					if (!(Flags & _ISFLAG_READY)) {
 						InterStage++;
 						Flags |= _ISFLAG_READY;
 						if (InterStage == 3) {
-							DescriptionBasePtr = ParseString + StrIterator;
+							DescriptionBasePtr = ParseString + StrIterator + 1;
 						}
 					}
 					break;
@@ -119,8 +121,8 @@ int psin_declare(const char* Instruction) {
 					break;
 			}
 			if (InterStage == 4) {
-				strncpy(Description, DescriptionBasePtr, DescriptionLength);
-				
+				strncpy(Description, DescriptionBasePtr, DescriptionLength - 1);
+				DescriptionLength = 0;
 				InterStage = 0;
 				CurrentStage++;
 				BackupIterator = StrIterator;
@@ -156,9 +158,9 @@ int psin_declare(const char* Instruction) {
 						printf("[ERR]: Parse error, %d is too many operands!\n", InterStage);
 						break;
 				}
+				InterStage = 0;
+				CurrentStage++;
 			}
-			InterStage = 0;
-			CurrentStage++;
 		}
 		if (CurrentStage == 4) { // Get Operand A
 			if (!(PresentMap & 0b100)) {
@@ -177,11 +179,11 @@ int psin_declare(const char* Instruction) {
 							InterStage++;
 							break;
 						} else {
-							continue;
+							break;
 						}
 					case '(': // Stage 2: Get Virtual Size
 						if (InterStage != 2)
-							continue;
+							break;
 						if (ParseString[StrIterator + 2] == ',')
 							strncpy(TempStr, ParseString + StrIterator + 1, 1);
 						else
@@ -194,10 +196,9 @@ int psin_declare(const char* Instruction) {
 							Flags |= _ISFLAG_SEEKINGDESC;
 							if (LocalDescriptionCounter == 0)
 								LocalDescriptionBasePtr = ParseString + StrIterator;
-							LocalDescriptionCounter++;
 						} else {
 							if (InterStage != 3)
-								continue;
+								break;
 							if (ParseString[StrIterator + 2] == ')')
 								strncpy(TempStr, ParseString + StrIterator + 1, 1);
 							else
@@ -209,20 +210,143 @@ int psin_declare(const char* Instruction) {
 					case ']':
 						if (InterStage == 4) {
 							if (Flags & _ISFLAG_SEEKINGDESC) {
-								strncpy(OperandADesc, LocalDescriptionBasePtr, LocalDescriptionCounter);
+								strncpy(OperandADesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter);
 								InterStage = 0;
+								Flags = 0;
+								LocalDescriptionCounter = 0;
 								CurrentStage++;
 							}
 						}
 						break;
+					default:
+						if (Flags & _ISFLAG_SEEKINGDESC)
+							LocalDescriptionCounter++;
 				}
 			}
 		}
 		if (CurrentStage == 5) { // Get Operand B
-			
+			if (!(PresentMap & 0b010)) {
+				CurrentStage++;
+			} else {
+				switch (ParseString[StrIterator]) {
+					case '[': // Stage 0
+						if (InterStage == 0)
+							InterStage++;
+						break;
+					case 'I': // Stage 1
+					case 'R':
+						if (InterStage == 1) {
+							if (ParseString[StrIterator] == 'R')
+								RegisterMap |= 0b010;
+							InterStage++;
+							break;
+						} else {
+							break;
+						}
+					case '(': // Stage 2: Get Virtual Size
+						if (InterStage != 2)
+							break;
+						if (ParseString[StrIterator + 2] == ',')
+							strncpy(TempStr, ParseString + StrIterator + 1, 1);
+						else
+							strncpy(TempStr, ParseString + StrIterator + 1, 2);
+						OperandBSize = atoi(TempStr);
+						InterStage++;
+						break;
+					case ',': // Stage 3: Get Physical Size
+						if (InterStage == 4) { // Stage 4: Get Description
+							Flags |= _ISFLAG_SEEKINGDESC;
+							if (LocalDescriptionCounter == 0)
+								LocalDescriptionBasePtr = ParseString + StrIterator;
+						} else {
+							if (InterStage != 3)
+								break;
+							if (ParseString[StrIterator + 2] == ')')
+								strncpy(TempStr, ParseString + StrIterator + 1, 1);
+							else
+								strncpy(TempStr, ParseString + StrIterator + 1, 2);
+							OperandBPhys = atoi(TempStr);
+							InterStage++;
+						}
+						break;
+					case ']':
+						if (InterStage == 4) {
+							if (Flags & _ISFLAG_SEEKINGDESC) {
+								strncpy(OperandBDesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 1);
+								InterStage = 0;
+								LocalDescriptionCounter = 0;
+								Flags = 0;
+								CurrentStage++;
+							}
+						}
+						break;
+					default:
+						if (Flags & _ISFLAG_SEEKINGDESC)
+							LocalDescriptionCounter++;
+				}
+			}
 		}
 		if (CurrentStage == 6) { // Get Operand C
-			
+			if (!(PresentMap & 0b001)) {
+				CurrentStage++;
+			} else {
+				switch (ParseString[StrIterator]) {
+					case '[': // Stage 0
+						if (InterStage == 0)
+							InterStage++;
+						break;
+					case 'I': // Stage 1
+					case 'R':
+						if (InterStage == 1) {
+							if (ParseString[StrIterator] == 'R')
+								RegisterMap |= 0b001;
+							InterStage++;
+							break;
+						} else {
+							break;
+						}
+					case '(': // Stage 2: Get Virtual Size
+						if (InterStage != 2)
+							break;
+						if (ParseString[StrIterator + 2] == ',')
+							strncpy(TempStr, ParseString + StrIterator + 1, 1);
+						else
+							strncpy(TempStr, ParseString + StrIterator + 1, 2);
+						OperandCSize = atoi(TempStr);
+						InterStage++;
+						break;
+					case ',': // Stage 3: Get Physical Size
+						if (InterStage == 4) { // Stage 4: Get Description
+							Flags |= _ISFLAG_SEEKINGDESC;
+							if (LocalDescriptionCounter == 0)
+								LocalDescriptionBasePtr = ParseString + StrIterator;
+						} else {
+							if (InterStage != 3)
+								break;
+							if (ParseString[StrIterator + 2] == ')')
+								strncpy(TempStr, ParseString + StrIterator + 1, 1);
+							else
+								strncpy(TempStr, ParseString + StrIterator + 1, 2);
+							OperandCPhys = atoi(TempStr);
+							InterStage++;
+						}
+						break;
+					case ']':
+						if (InterStage == 4) {
+							if (Flags & _ISFLAG_SEEKINGDESC) {
+								strncpy(OperandCDesc, LocalDescriptionBasePtr + 1, LocalDescriptionCounter + 1);
+								InterStage = 0;
+								Flags = 0;
+								LocalDescriptionCounter = 0;
+								CurrentStage++;
+							}
+						}
+						break;
+					default:
+						if (Flags & _ISFLAG_SEEKINGDESC)
+							LocalDescriptionCounter++;
+				}
+			}
 		}
 		if (CurrentStage == 7) { // Get Instruction Size
 			
@@ -230,6 +354,8 @@ int psin_declare(const char* Instruction) {
 		
 		StrIterator++;
 	}
+	
+	psini_createinst(Opcode, OperandASize, OperandBSize, OperandCSize, RegisterMap, PresentMap, Mnemonic, Description, OperandADesc, OperandBDesc, OperandCDesc, TotalInstructionSize, OperandAPhys, OperandBPhys, OperandCPhys);
 	
 	free(ParseString);
 	free(Mnemonic);
