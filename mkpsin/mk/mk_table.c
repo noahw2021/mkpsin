@@ -116,9 +116,11 @@ char* mki_compiletable(mktable_t* Table) {
 		strcat(Return, "**|");
 	}
 	strcat(Return, mki_getline());
-	for (int r = 0; r < (Table->CurrentRow); r++) {
-		for (int c = 0; c < (Table->CurrentColumn + 1); c++) {
+	for (int r = 1; r < (Table->CurrentRow); r++) {
+		for (int c = 0; c < (Table->CurrentColumn); c++) {
 			mktablefield_t* Field = mktdi_getfieldbycolumnrow(Table->Fields, Table->FieldCount, c, r);
+			if (!Field)
+				continue;
 			strcat(Return, Field->Data);
 			strcat(Return, "|");
 		}

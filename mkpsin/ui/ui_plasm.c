@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void ui_generate(int argc, char** argv) {
+void ui_forplasm(int argc, char** argv) {
 	char* Outfile = argv[2];
 	if (!Outfile) {
 		printf("[ERR]: No Output file!\n");
@@ -60,7 +60,7 @@ void ui_generate(int argc, char** argv) {
 			mkdt_addheader(InstructionTable, "Type", 1);
 			mkdt_addheader(InstructionTable, "Available Size", 2);
 			mkdt_addheader(InstructionTable, "Physical Size", 3);
-			byte UpCounter = 0;
+			byte UpCounter = 255;
 			if (PresentMap & 0b100) {
 				UpCounter++;
 				mkdt_addfield(InstructionTable, psin_getoperandadesc(Reference), UpCounter, 0);
