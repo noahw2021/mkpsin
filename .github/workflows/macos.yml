@@ -1,0 +1,6 @@
+uses: sersoft-gmbh/xcodebuild-action@v1
+with:
+  project: mkspin.xcodeproj
+  scheme: mkpsin
+  destination: platform=macOS
+  action: test
