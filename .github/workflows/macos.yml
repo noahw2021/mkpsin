@@ -3,4 +3,4 @@ with:
   project: mkspin.xcodeproj
   scheme: mkpsin
   destination: platform=macOS
-  action: test
+  action: build
