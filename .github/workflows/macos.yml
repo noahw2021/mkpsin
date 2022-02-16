@@ -11,7 +11,6 @@ jobs:
     steps:
     - uses: sersoft-gmbh/xcodebuild-action@v1
     - name: Use xcodebuild
-      uses: sersoft-gmbh/xcodebuild-action@v1
       with:
         project: mkspin.xcodeproj
         scheme: mkpsin
