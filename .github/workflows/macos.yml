@@ -1,6 +1,19 @@
-uses: sersoft-gmbh/xcodebuild-action@v1
-with:
-  project: mkspin.xcodeproj
-  scheme: mkpsin
-  destination: platform=macOS
-  action: build
+name: CI
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+jobs:
+  test:
+    name: Test on macOS
+    runs-on: macOS-latest
+    steps:
+    - uses: sersoft-gmbh/xcodebuild-action@v1
+    - name: Use xcodebuild
+      uses: sersoft-gmbh/xcodebuild-action@v1
+      with:
+        project: mkspin.xcodeproj
+        scheme: mkpsin
+        destination: platform=macOS
+        action: build
