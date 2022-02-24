@@ -100,4 +100,8 @@ void main_loadinst(void) {
 	psin_declare("STQM = 0x59, // Store Register Quarter-Word from Memory (STQM [R:(4,4),DEST] [R:(4,4),SRC_PTR]):16");
 	psin_declare("LDQMI = 0x5A, // Load Immediate Quarter-Word from Memory (LDQM [R:(4,8),DEST] [I:(16,16),SRC]):32");
 	psin_declare("STQMI = 0x5B, // Store Immediate Quarter-Word from Memory (STQM [R:(4,8),DEST] [I:(16,16),SRC]):32");
+	psin_declare("_STWMII = 0x5C, // Store Immediate Immediate Word in Memory (STWMII [I:(64,64),DEST] [I:(64,64),SRC]):136");
+	psin_declare("__STHMII = 0x5D, // Store Immediate Immediate Half Word in Memory (STHMII [I:(64,64),DEST] [I:(32,32),SRC]):104");
+	psin_declare("__STQMII = 0x5E, // Store Immediate Immediate Quarter Word in Memory (STQMII [I:(64,64),DEST] [I:(16,16),SRC]):88");
+	psin_declare("__STBMII = 0x5F, // Store Immediate Immediate Byte in Memory (STBMII [I:(64,64),DEST] [I:(8,8),SRC]):80");
 }
