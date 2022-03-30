@@ -1,0 +1,17 @@
+name: macOS Legacy Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: macOS-10.15
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: make
+      run: make
