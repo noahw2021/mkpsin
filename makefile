@@ -1,5 +1,5 @@
 # https://spin.atomicobject.com/2016/08/26/makefile-c-projects/ :)
-TARGET_EXEC := mkpsin
+TARGET_EXEC := mkpsin64
 BUILD_DIR := ./build
 SRC_DIRS := ./mkpsin
 SRCS := $(shell find $(SRC_DIRS) -name '*.c')
