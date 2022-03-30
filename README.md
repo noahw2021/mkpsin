@@ -3,7 +3,16 @@
 ![Code size](https://img.shields.io/github/languages/code-size/noahw2021/mkpsin.svg)
 <br>
 A markdown generator for instructions sets described using PSIN.
-
+## Continous Integration
+Below, badges for continous integration are available.
+| Platform                 | Main |
+|--------------------------|------|
+| macOS (Latest)           |[![macOS Build](https://github.com/noahw2021/mkpsin/actions/workflows/c-macos.yml/badge.svg)](https://github.com/noahw2021/mkpsin/actions/workflows/c-macos.yml)|
+| macOS (10.15)            |[![macOS Legacy Build](https://github.com/noahw2021/mkpsin/actions/workflows/c-osxlegacy.yml/badge.svg)](https://github.com/noahw2021/mkpsin/actions/workflows/c-osxlegacy.yml)|
+| Linux (Ubuntu Latest)    |[![Ubuntu Build](https://github.com/noahw2021/mkpsin/actions/workflows/c-ubuntu.yml/badge.svg)](https://github.com/noahw2021/mkpsin/actions/workflows/c-ubuntu.yml)|
+| Linux (Ubuntu LTS 18.04) |[![Ubuntu LTS Build](https://github.com/noahw2021/mkpsin/actions/workflows/c-ubuntults.yml/badge.svg)](https://github.com/noahw2021/mkpsin/actions/workflows/c-ubuntults.yml)|
+| Windows (Latest Release) |[![Windows Build](https://github.com/noahw2021/mkpsin/actions/workflows/c-windows.yml/badge.svg)](https://github.com/noahw2021/mkpsin/actions/workflows/c-windows.yml)|
+| Windows (Latest Debug)   |[![Windows Debug Build](https://github.com/noahw2021/mkpsin/actions/workflows/c-windbg.yml/badge.svg)](https://github.com/noahw2021/mkpsin/actions/workflows/c-windbg.yml)|
 
 ## PSIN
 ```
